@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Resources;
+
+use App\Enums\UserType;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class UserSingleResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     */
+    public function toArray($request)
+    {
+        $data =
+            [
+                'id' => $this->id,
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'email' => $this->email,
+                'cover_photo' => $this->getProfileImagePath(),
+                'user_type' => $this->user_type
+            ];
+        if ($this->user_type === UserType::SHELTER) {
+            $data['shelter'] = $this->shelter;
+        }
+
+        return $data;
+    }
+}

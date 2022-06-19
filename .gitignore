@@ -1,0 +1,4 @@
+/vendor
+/storage
+/.mariadb-data
+.mariadb-data

@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+
+  goodboi_api:
+    container_name: goodboi_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_DATABASE: db
+      DB_USERNAME: root
+      DB_PASSWORD: rootpass
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+    networks:
+      - app 
+
+  db:
+    container_name: goodboi_db
+    image: mariadb:10.4.8-bionic
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - .mariadb-data:/var/lib/mysql #connect local files with container files 
+    networks:
+      - app
+    ports:
+      - 3306:3306
+      
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin1
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpass
+    depends_on:
+      - db
+    networks:
+      - app
+      
+networks:
+  app: 
+

@@ -1,0 +1,75 @@
+<?php
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DogsController;
+use App\Http\Controllers\EmailVerification;
+use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ShelterController as ControllersShelterController;
+use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
+use App\Http\Controllers\Shelters\ShelterController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\VaccinesController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+//Only FOR Authenticated users
+Route::middleware('auth:api')->group(function () {
+    //Route::apiResource('users', UserController::class);
+    Route::post('user/update_profile', [UserController::class, 'update']);;
+    Route::put('user/password', [UserController::class, 'updatePassword']);
+    Route::get('current-user', [UserController::class, 'getLoggedinUser']);
+    Route::get('current-shelter', [UserController::class, 'getCurrentShelter']);
+    Route::get('loggedin-user', [UserController::class, 'getLoggedInData']);
+    Route::post('logout', [AuthController::class, 'logout']); // Logouts the user deletes its key 
+    Route::post('email/verification', [EmailVerificationController::class, 'sendVerificationEmail']);
+    Route::get('countries', [CountryController::class, 'getCountries']);
+    Route::get('cities/{countryId}', [CityController::class, 'getCitiesCountry']);
+    Route::get('vaccinations', [VaccinesController::class, 'getAllVaccines']);
+});
+
+//Only for shelters 
+Route::group([
+    'middleware' => ['auth:api', 'scope:shelter'],
+    'prefix' => 'shelter',
+    'namespace' => 'Shelter'
+], function () {
+    Route::post('createProfile', [ShelterController::class, 'createProfile']);
+    Route::post('profile', [ShelterController::class, 'store']);
+    //*** Managment Dog Listings ****
+    Route::post('animals/create', [SheltersDogsController::class, 'store']); // Shelter create dog listing
+    Route::post('animals/{dog}/edit', [SheltersDogsController::class, 'update']); //Shelter update specific dog listing
+    Route::get('animals/{dog}/edit', [SheltersDogsController::class, 'showEdit']); //get the info of shelter its own listing
+    Route::get('current/listings', [ShelterController::class, 'shelterListings']); //get the loggedin user listings
+    Route::put('animals/{dog}/delete', [SheltersDogsController::class, 'destroy']); //Deletes a listing
+});
+
+//COMMON for all 
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('animals/dogs', [DogsController::class, 'index']); // Display all the listings paginated
+Route::get('animals/dogs', [DogsController::class, 'index']); // Display all the listings paginated
+Route::get('get_shelters', [ShelterController::class, 'index']); // Display all the shelters 
+Route::post('get_shelters', [ShelterController::class, 'index']); // Display all the shelters (POST)
+Route::get('animals/{id}', [DogsController::class, 'showById']); //display single animal listing by id
+Route::get('countries', [CountriesController::class, 'index']);
+Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('reset-password', [ForgotPasswordController::class, 'passwordReset']);
+Route::get('animals/shelter/{id}', [DogsController::class, 'shelterListings']);
+Route::post('cities/all', [CityController::class, 'getAllCities']);
+Route::get('shelters/{id}', [ControllersShelterController::class, 'getSingle']);
