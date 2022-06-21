@@ -35,7 +35,7 @@ class CoverImageUploader implements ImagePhotoUploaderInterface
                 $this->path = $this->file->move(public_path(CoverImageEnum::USERS), $fileName);
                 break;
             case "listings":
-                $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid();
+                $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid() . "." . $this->file->getClientOriginalExtension();
                 $this->path = $this->file->move(public_path(CoverImageEnum::LISTINGS), $fileName);
                 break;
             default:

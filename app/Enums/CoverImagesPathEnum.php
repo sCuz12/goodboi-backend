@@ -12,7 +12,7 @@ use BenSampo\Enum\Enum;
 final class CoverImagesPathEnum extends Enum
 {
     const USERS = "/images/cover_images/profiles";
-    const LISTINGS = "/images/cover_images/profiles";
+    const LISTINGS = "/images/cover_images/listings";
 
     const ALLOWED_TYPES = [
         "users", "listings"
