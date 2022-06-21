@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
             // DogsSeeder::class,
             /* Needed one time run on production */
             DogBreedSeeder::class,
-            // VaccinationSeeder::class,
-            // CountriesSeeder::class,
-            // CitiesSeeder::class,
+            VaccinationSeeder::class,
+            CountriesSeeder::class,
+            CitiesSeeder::class,
             // DogListingStatusesSeeder::class
         ]);
     }
