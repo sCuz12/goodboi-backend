@@ -68,7 +68,7 @@ services:
     volumes: 
       - ./certbot/conf:/etc/letsencrypt/:rw
       - ./certbot/www/:/var/www/certbot/:rw
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email georgex8@gmail.com  -d api.goodboi.com.cy  --agree-tos
+    #command: certonly --webroot -w /var/www/certbot --force-renewal --email georgex8@gmail.com  -d api.goodboi.com.cy  --agree-tos
     networks: 
       - app
 
