@@ -151,11 +151,17 @@ class DogService
         $listing = Dogs::find($id);
 
         $ableToUpdate = Auth::user()->can('update', $listing);
+
         //check the permissions
         if (!$ableToUpdate) {
             return response("You do not own this listing", Response::HTTP_FORBIDDEN);
         }
 
-        return $listing->delete();
+        $deleted = $listing->delete();
+
+        if (!$deleted) {
+            return Response('Failed to delete listing', Response::HTTP_NOT_FOUND);
+        }
+        return Response('Listing deleted succesfully', Response::HTTP_ACCEPTED);
     }
 }

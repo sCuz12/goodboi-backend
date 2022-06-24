@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('animal_vaccination', function (Blueprint $table) {
-            $table->foreignId('animal_id')->constrained('animal_health_book');
+            $table->foreignId('animal_id')->constrained('animal_health_book')->onDelete('cascade');
             $table->foreignId('vaccination_id')->constrained('available_vaccinations');
         });
     }

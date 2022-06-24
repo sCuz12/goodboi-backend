@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('animal_health_book', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('dog_id');
-            $table->foreign('dog_id')->references('id')->on('dogs')
-                ->onDelete('cascade');;
+            $table->foreign('dog_id')->references('id')->on('dogs')->onDelete('cascade');
             $table->timestamps();
         });
     }

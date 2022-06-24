@@ -39,10 +39,8 @@ class DogsController extends Controller
     public function destroy($id)
     {
         $deleted = (new DogService())->deleteListing($id);
-        if ($deleted) {
-            return Response('Listing deleted succesfully', Response::HTTP_ACCEPTED);
-        }
-        return Response('Failed to delete listing', Response::HTTP_NOT_FOUND);
+
+        return $deleted;
     }
 
     /**
