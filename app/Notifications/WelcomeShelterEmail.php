@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WelcomeEmail extends Notification
+class WelcomeShelterEmail extends Notification
 {
     use Queueable;
 
@@ -42,9 +42,10 @@ class WelcomeEmail extends Notification
     {
         return (new MailMessage)
             ->line('Welcome to ' . env('APP_NAME'))
-            ->line('You are one step away from become a hero !! ')
-            ->action("Lets explore our diamonds", url(env('CLIENT_URL')))
-            ->line('Thank you for using our platform!');
+            ->line('Thanks for joining to our platform as a shelter')
+            ->line("Login and update your shelter profile and start listing dogs")
+            ->action('Login', url(env('CLIENT_URL') . "/login"))
+            ->line('Thank you for using our application!');
     }
 
     /**

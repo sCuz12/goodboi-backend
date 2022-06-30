@@ -8,6 +8,7 @@ use App\Http\Requests\UserCreateRequest;
 use App\Models\Shelter;
 use App\Models\User;
 use App\Notifications\WelcomeEmail;
+use App\Notifications\WelcomeShelterEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
@@ -42,9 +43,12 @@ class AuthService
             Shelter::create([
                 'user_id' => $user->id,
             ]);
+            $user->notify(new WelcomeShelterEmail());
+        } else {
+            $user->notify(new WelcomeEmail());
         }
 
-        $user->notify(new WelcomeEmail());
+
 
         return $user;
     }
