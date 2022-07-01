@@ -35,4 +35,6 @@ final class DogListingStatusesEnum extends Enum
             "name" => "disabled",
         ],
     ];
+
+    const ACTIVE = "1";
 }

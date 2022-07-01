@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DogListingStatusesEnum as ListingStatuses;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -93,7 +94,7 @@ class Dogs extends Model
      */
     public static function getAllActiveDogs(): LengthAwarePaginator
     {
-        $activeDogs = Dogs::where('status_id', 1)->paginate(12);
+        $activeDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)->paginate(12);
         return $activeDogs;
     }
 
@@ -105,7 +106,7 @@ class Dogs extends Model
      */
     public static function getListingsByParams($params): LengthAwarePaginator
     {
-        $query = Dogs::where('status_id', 1);
+        $query = Dogs::where('status_id', ListingStatuses::ACTIVE);
 
         if (isset($params['size'])) {
             $query->where('size', $params['size']);
@@ -131,5 +132,22 @@ class Dogs extends Model
     public static function findById($id)
     {
         return Dogs::where('id', $id)->first();
+    }
+
+    /**
+     * Get the count all active dog listings of specific shelter
+     *
+     * @param  int $shelter_id
+     * @param  bool $active
+     * @return int 
+     */
+    public static function getListingsCountByShelter(int $shelter_id, bool $active = false)
+    {
+        $query = Dogs::where('shelter_id', $shelter_id);
+        if ($active) {
+            $query->where('status_id', ListingStatuses::ACTIVE);
+        }
+        $listingsCount = $query->get()->count();
+        return (int) $listingsCount;
     }
 }

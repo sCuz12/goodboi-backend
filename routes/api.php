@@ -51,6 +51,7 @@ Route::group([
 ], function () {
     Route::post('createProfile', [ShelterController::class, 'createProfile']);
     Route::post('profile', [ShelterController::class, 'store']);
+    Route::get('profile/stats', [ShelterController::class, 'getStats']);
     //*** Managment Dog Listings ****
     Route::post('animals/create', [SheltersDogsController::class, 'store']); // Shelter create dog listing
     Route::post('animals/{dog}/edit', [SheltersDogsController::class, 'update']); //Shelter update specific dog listing

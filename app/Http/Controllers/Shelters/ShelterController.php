@@ -52,4 +52,16 @@ class ShelterController extends Controller
         $listings = (new DogService())->getAllListingsOfShelter($user->shelter->id);
         return DogResource::collection($listings);
     }
+
+    /**
+     * Returns all the status of the Auth Shelter
+     *
+     * @return JSON
+     */
+    public function getStats()
+    {
+        $user = Auth::user();
+        $data = (new ShelterService())->getShelterStats($user);
+        return response(['data' => $data], Response::HTTP_ACCEPTED);
+    }
 }
