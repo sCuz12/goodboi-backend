@@ -105,7 +105,8 @@ class DogService
         }
 
         //Handle Images upload if listing image are changed
-        if ($request->image) {
+        if ($request->images) {
+
             (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage(true);
         }
 
