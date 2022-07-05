@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Shelters;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDogListRequest;
 use App\Http\Requests\EditDogListRequest;
+use App\Http\Resources\DogEditSingleResource;
 use App\Http\Resources\DogResource;
+use App\Http\Resources\DogSingleResource;
 use App\Models\Dogs;
 use App\Services\DogService;
 use Exception;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Response as Response;
 
 class DogsController extends Controller
@@ -26,7 +30,7 @@ class DogsController extends Controller
         return response($dogList, Response::HTTP_ACCEPTED);
     }
 
-    public function update(EditDogListRequest $request, $id)
+    public function update(HttpRequest $request, $id)
     {
 
         $dogList = (new DogService())->editDogListing($request, $id);
@@ -56,6 +60,6 @@ class DogsController extends Controller
         } catch (Exception $e) {
             return response("Not owner of this listing", Response::HTTP_UNAUTHORIZED);
         }
-        return new DogResource($dogListing);
+        return new DogEditSingleResource($dogListing);
     }
 }

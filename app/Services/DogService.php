@@ -77,11 +77,11 @@ class DogService
     /**
      * Updates a specific Dog listing to db
      *
-     * @param  EditDogListRequest $request
+     * @param  Request $request
      * @param  int $dogList_id
      * @return Dogs
      */
-    public function editDogListing(EditDogListRequest $request, int $dogList_id)
+    public function editDogListing(Request $request, int $dogList_id)
     {
         $dogList = Dogs::findOrFail($dogList_id);
         //Checks if its dog post owner
@@ -91,7 +91,24 @@ class DogService
             return response("Not owner of this listing", Response::HTTP_UNAUTHORIZED);
         }
 
+        if ($request->cover_photo) {
+            $image      = (new CoverImageUploader($request->cover_photo, "listings"))->uploadImage();
+            $request->request->add(['cover_image' => $image]);
+        }
+
         $dogList->update($request->all());
+
+        //Handle Vaccinations update 
+        if ($request->vaccinations) {
+            $animalBook = AnimalHealthBook::where('dog_id', $dogList->id)->first();
+            $animalBook->vaccinations()->sync($request->vaccinations, ['dog_id', $dogList->id]);
+        }
+
+        //Handle Images upload if listing image are changed
+        if ($request->image) {
+            (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage(true);
+        }
+
 
         return $dogList;
     }

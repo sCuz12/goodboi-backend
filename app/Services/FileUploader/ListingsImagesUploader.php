@@ -25,11 +25,16 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
 
     /**
      * Uploads all the images for the listings 
+     * param bool $update 
      *
      * @return void
      */
-    function uploadImage()
+    function uploadImage(bool $update = false)
     {
+
+        if ($update) {
+            DogListingImages::where('dog_id', $this->dog_list_id)->delete();
+        }
         //Loop through the files
         foreach ($this->files as $file) {
             $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid();
