@@ -16,12 +16,14 @@ class ShelterResource extends JsonResource
     {
 
         return [
-            'id' => $this->id,
-            'shelter_name' => $this->shelter_name,
+            'id'            => $this->id,
+            'shelter_name'  => $this->shelter_name,
             'address'       => $this->address,
             'description'   => $this->description,
-            'cover_image'  => $this->getCoverImagePath(),
-            'city'      => $this->city->name
+            'cover_image'   => $this->getCoverImagePath(),
+            'city'          => $this->city->name,
+            'email'         => $this->user->email,
+            'phone'         => $this->phone,
         ];
     }
 }
