@@ -75,6 +75,15 @@ class Dogs extends Model
     {
         return $this->hasOne(AnimalHealthBook::class, 'dog_id');
     }
+    /** 
+     * Get the favourites listing of user on pivot table favourites
+     *
+     * @return BelongsToMany
+     */
+    public function favourites()
+    {
+        return $this->belongsToMany(Dogs::class, 'favourites', 'dog_id', 'user_id')->withTimestamps();
+    }
 
     /**
      * Retrieves the cover image of dog listing and append the path

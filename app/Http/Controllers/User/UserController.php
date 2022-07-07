@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Enums\DogListingStatusesEnum;
 use App\Enums\UserType;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserCreateRequest;
+use App\Http\Resources\DogResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserSingleResource;
 use App\Models\User;
@@ -93,5 +95,15 @@ class UserController
         return [
             'user'  => $user,
         ];
+    }
+    /**
+     * Gets all the favourite listings of user
+     *
+     * @return JSON
+     */
+    public function getFavouritesListing()
+    {
+        $dogsListings = Auth::user()->favourites->where('status_id', DogListingStatusesEnum::ACTIVE);
+        return DogResource::collection($dogsListings);
     }
 }
