@@ -7,6 +7,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DogsController;
 use App\Http\Controllers\EmailVerification;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ShelterController as ControllersShelterController;
 use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
@@ -33,7 +34,9 @@ Route::middleware('auth:api')->group(function () {
     //Route::apiResource('users', UserController::class);
     Route::post('user/update_profile', [UserController::class, 'update']);;
     Route::put('user/password', [UserController::class, 'updatePassword']);
+    Route::get('/user/favourites', [UserController::class, 'getFavouritesListing']);
     Route::get('current-user', [UserController::class, 'getLoggedinUser']);
+
     Route::get('current-shelter', [UserController::class, 'getCurrentShelter']);
     Route::get('loggedin-user', [UserController::class, 'getLoggedInData']);
     Route::post('logout', [AuthController::class, 'logout']); // Logouts the user deletes its key 
@@ -41,6 +44,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('countries', [CountryController::class, 'getCountries']);
     Route::get('cities/{countryId}', [CityController::class, 'getCitiesCountry']);
     Route::get('vaccinations', [VaccinesController::class, 'getAllVaccines']);
+
+    //Favorite
+    Route::post('/favourite/{dog_id}', [FavouriteController::class, 'addToFavourites']);
+    Route::post('/unfavourite/{dog_id}', [FavouriteController::class, 'removeFromFavourites']);
 });
 
 //Only for shelters 

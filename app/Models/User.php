@@ -83,6 +83,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Fetch all the favourites of user
+     *
+     * @return JSON
+     */
+    public function favourites()
+    {
+        return $this->belongsToMany(Dogs::class, 'favourites', 'user_id', 'dog_id')->withTimeStamps();
+    }
+
 
     public function isNormalUser()
     {
