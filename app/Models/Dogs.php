@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class Dogs extends Model
 {
@@ -158,5 +159,16 @@ class Dogs extends Model
         }
         $listingsCount = $query->get()->count();
         return (int) $listingsCount;
+    }
+
+    /**
+     * Check wether specific user has favourite specific dog on pibvot table favourites
+     *
+     * @param  int $user_id
+     * @return bool 
+     */
+    public function isFavoritedByExist($user_id): bool
+    {
+        return DB::table('favourites')->where('dog_id', $this->id)->where('user_id', $user_id)->exists();
     }
 }

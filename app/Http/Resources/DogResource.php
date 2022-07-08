@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\DogListingImages;
+use Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 
@@ -16,7 +17,9 @@ class DogResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+
+
+        $data = [
             'id' => $this->id,
             'title' => $this->title,
             'name' => $this->name,
@@ -27,5 +30,12 @@ class DogResource extends JsonResource
             'size'        => $this->size,
             'slug'        => $this->slug,
         ];
+
+        if (auth('api')->user()) {
+            $data += [
+                'is_favourited' => $this->isFavoritedByExist(auth('api')->user()->id) ?? false,
+            ];
+        }
+        return $data;
     }
 }
