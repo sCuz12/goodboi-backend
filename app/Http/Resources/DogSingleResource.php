@@ -34,13 +34,12 @@ class DogSingleResource extends JsonResource
             'description' => $this->description,
             'image'       => $this->image,
             'age'         => Carbon::parse($this->dob)->age,
-            'killograms'  => $this->killograms,
             'cover_image' => $this->getCoverImagePath(),
             'listing_images' => $listingsImages,
             'vaccinations'  => $vaccinations ?? null,
             'size'          => $this->size,
-            'shelter_info' => $shelterInformation
-
+            'city'         => $this->city->name,
+            'shelter_info' => $shelterInformation,
         ];
     }
 }
