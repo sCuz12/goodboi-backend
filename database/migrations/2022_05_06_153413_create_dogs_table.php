@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer('breed_id')->nullable();
             $table->integer('city_id');
             $table->integer('status_id');
+            $table->integer('total_views')->default(0);
             $table->timestamps();
         });
     }
