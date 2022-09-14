@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->boolean('is_profile_complete')->default(0);
             $table->integer('city_id')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('facebook')->nullable();
             $table->timestamps();
         });
     }

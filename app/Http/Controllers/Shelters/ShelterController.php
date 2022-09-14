@@ -33,7 +33,7 @@ class ShelterController extends Controller
 
         $user = Auth::user();
 
-        $user->shelter->update($request->only('shelter_name', 'address', 'phone', 'description', 'user_id', 'city_id') + [
+        $user->shelter->update($request->only('shelter_name', 'address', 'phone', 'description', 'user_id', 'city_id', 'instagram', 'facebook') + [
             'slug' => Str::slug($request->shelter_name),
             'is_profile_complete' => 1,
         ]);

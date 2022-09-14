@@ -23,6 +23,8 @@ class ShelterSingleResource extends JsonResource
             'city' => $this->city->name,
             'cover_image' => $this->getCoverImagePath(),
             'email'        => $this->user->email,
+            'instagram'   => $this->instagram,
+            'facebook'    => $this->facebook,
         ];
     }
 }
