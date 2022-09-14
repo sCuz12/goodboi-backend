@@ -8,6 +8,7 @@ use App\Http\Resources\DogResource;
 use App\Models\AnimalHealthBook;
 use App\Models\Shelter as Shelter;
 use App\Models\Dogs;
+use App\Models\DogsViewsLog;
 use App\Services\FileUploader\CoverImageUploader;
 use App\Services\FileUploader\ListingsImagesUploader;
 use Exception;
@@ -181,5 +182,26 @@ class DogService
             return Response('Failed to delete listing', Response::HTTP_NOT_FOUND);
         }
         return Response('Listing deleted succesfully', Response::HTTP_ACCEPTED);
+    }
+
+
+    /**
+     * checks if user has not already seen the listing incrase the counter 
+     *
+     * @param  Dogs $dog
+     * @return void
+     */
+    public function updateCountView(Dogs $dog): void
+    {
+        //@todo get the ip from the next.js
+        $ip = \Request::getClientIp();
+
+        $userAlreadySeen = DogsViewsLog::isUserAlreadySeen($dog->id, $ip);
+
+        if (!$userAlreadySeen) {
+            Dogs::incrementViews($dog);
+        }
+
+        DogsViewsLog::insertViewLog($dog);
     }
 }

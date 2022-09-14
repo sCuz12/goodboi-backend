@@ -33,13 +33,16 @@ class DogsController extends Controller
      * @param  mixed $id
      * @return json
      */
-    public function showById($slug)
+    public function showById($id)
     {
-        $dog = Dogs::findById($slug);
+        $dog = Dogs::findById($id);
         //Handle not found
         if (!$dog) {
             return response("Listing not found", 404);
         }
+        //updates count of the view 
+        (new DogService())->updateCountView($dog);
+
         return new DogSingleResource($dog);
     }
 

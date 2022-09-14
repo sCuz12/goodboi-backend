@@ -137,7 +137,7 @@ class Dogs extends Model
      * Search dog listing by id
      *
      * @param  int $id
-     * @return LengthAwarePaginator
+     * @return Dogs
      */
     public static function findById($id)
     {
@@ -170,5 +170,17 @@ class Dogs extends Model
     public function isFavoritedByExist($user_id): bool
     {
         return DB::table('favourites')->where('dog_id', $this->id)->where('user_id', $user_id)->exists();
+    }
+
+    /**
+     * Increase the total_views counter of dog
+     *
+     * @param  mixed $dog
+     * @return void
+     */
+    public static function incrementViews(Dogs $dog)
+    {
+
+        return Dogs::where('id', $dog->id)->increment('total_views');
     }
 }
