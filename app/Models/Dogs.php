@@ -172,9 +172,15 @@ class Dogs extends Model
         return DB::table('favourites')->where('dog_id', $this->id)->where('user_id', $user_id)->exists();
     }
 
+    /**
+     * Increase the total_views counter of dog
+     *
+     * @param  mixed $dog
+     * @return void
+     */
     public static function incrementViews(Dogs $dog)
     {
-        //increment the job views + 1 if
-        Dogs::where('id', $dog->id)->increment('total_views');
+
+        return Dogs::where('id', $dog->id)->increment('total_views');
     }
 }
