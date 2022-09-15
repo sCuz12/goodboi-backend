@@ -189,19 +189,17 @@ class DogService
      * checks if user has not already seen the listing incrase the counter 
      *
      * @param  Dogs $dog
+     * @param  String $clientIp
      * @return void
      */
-    public function updateCountView(Dogs $dog): void
+    public function updateCountView(Dogs $dog, String $clientIp): void
     {
-        //@todo get the ip from the next.js
-        $ip = \Request::getClientIp();
-
-        $userAlreadySeen = DogsViewsLog::isUserAlreadySeen($dog->id, $ip);
+        $userAlreadySeen = DogsViewsLog::isUserAlreadySeen($dog->id, $clientIp);
 
         if (!$userAlreadySeen) {
             Dogs::incrementViews($dog);
         }
 
-        DogsViewsLog::insertViewLog($dog);
+        DogsViewsLog::insertViewLog($dog, $clientIp);
     }
 }

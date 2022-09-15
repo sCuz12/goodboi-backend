@@ -17,15 +17,21 @@ class DogsViewsLog extends Model
      * insertViewLog
      *
      * @param  Dogs $dog
-     * @return void
+     * @param String $clientip
+     * @return bool
      */
-    public static function insertViewLog(Dogs $dog)
+    public static function insertViewLog(Dogs $dog, String $clientIp): bool
     {
-        DB::table(SELF::TABLE_NAME)->insert([
+        //ensure is ip + valid 
+        if (!filter_var($clientIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $clientIp = 0;
+        }
+
+        return (bool)DB::table(SELF::TABLE_NAME)->insert([
             'dog_id'        => $dog->id,
             'user_id'       => $dog->shelter->user_id,
             'agent'         => \Request::header('User-Agent'),
-            'ip'            => \Request::getClientIp(),
+            'ip'            => $clientIp,
             'created_at'    => now(),
             'updated_at'    => now(),
         ]);
