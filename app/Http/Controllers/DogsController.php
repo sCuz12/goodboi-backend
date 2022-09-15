@@ -41,7 +41,7 @@ class DogsController extends Controller
             return response("Listing not found", 404);
         }
         //updates count of the view 
-        (new DogService())->updateCountView($dog, request()->header('CLIENT_IP'));
+        (new DogService())->updateCountView($dog, request()->header('Client_Ip'));
 
         return new DogSingleResource($dog);
     }
