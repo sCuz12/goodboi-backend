@@ -33,6 +33,12 @@ class Dogs extends Model
         'size'
     ];
 
+    const SORTABLE_FIELDS = [
+        'name',
+        'total_views',
+        'title',
+        'created_at'
+    ];
     const COVER_IMAGES_PATH = "images/cover_images/listings/";
 
     //One to many with Breed
@@ -128,6 +134,16 @@ class Dogs extends Model
 
         if (isset($params['city'])) {
             $query->whereIn('city_id', $params['city']);
+        }
+
+        if (isset($params['sortField'], $params['sortValue'])) {
+            // check if the sort field is allowed
+            if (in_array($params['sortField'], self::SORTABLE_FIELDS)) {
+                $query->orderBy(
+                    $params['sortField'],
+                    $params['sortValue']
+                );
+            }
         }
 
         return $query->paginate(10);

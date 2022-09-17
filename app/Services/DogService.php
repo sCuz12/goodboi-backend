@@ -124,7 +124,7 @@ class DogService
     public function filterDogsByRequest(Request $request)
     {
 
-        if ($request->size == null && $request->shelter_id == null && $request->city === null) {
+        if ($request->size == null && $request->shelter_id == null && $request->city === null && $request->sort === null) {
             //means no params added
             $dogs = Dogs::getAllActiveDogs();
             return $dogs;
@@ -140,6 +140,11 @@ class DogService
 
         if ($request->city != null) {
             $params['city'] = $request->city;
+        }
+
+        if ($request->sort) {
+            $params['sortField'] = $request->sort;
+            $params['sortValue'] = $request->sortValue;
         }
 
         $dogs = Dogs::getListingsByParams($params);
