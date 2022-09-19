@@ -35,7 +35,7 @@ services:
     networks:
       - app
 
-  db:
+  goodboi_production:
     container_name: goodboi_db
     image: mariadb:10.4.8-bionic
     environment:
@@ -55,11 +55,11 @@ services:
     ports:
       - 8080:8080
     environment:
-      PMA_HOST: db
+      PMA_HOST: goodboi_production
       MYSQL_USER: user
       MYSQL_PASSWORD: supersecret
     depends_on:
-      - db
+      - goodboi_production
     networks:
       - app
   certbot:
