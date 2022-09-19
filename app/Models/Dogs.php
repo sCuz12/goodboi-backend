@@ -199,4 +199,14 @@ class Dogs extends Model
 
         return Dogs::where('id', $dog->id)->increment('total_views');
     }
+
+    /**
+     * Get the number of favourites for the dog
+     *
+     * @return int
+     */
+    public function getCountOfFavourites()
+    {
+        return DB::table('favourites')->where('dog_id', $this->id)->count();
+    }
 }
