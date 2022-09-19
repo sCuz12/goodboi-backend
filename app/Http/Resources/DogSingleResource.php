@@ -40,7 +40,8 @@ class DogSingleResource extends JsonResource
             'size'          => $this->size,
             'city'         => $this->city->name,
             'shelter_info' => $shelterInformation,
-            'total_views'  => $this->total_views
+            'total_views'  => $this->total_views,
+            'total_favourites' => $this->getCountOfFavourites(),
         ];
     }
 }
