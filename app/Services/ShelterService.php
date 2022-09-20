@@ -35,11 +35,17 @@ class ShelterService
      */
     public function getShelterStats(User $user)
     {
-        $data = [];
+        $data                   = [];
+
+        $dogActiveListingsCount = Dogs::getListingsCountByShelter($user->shelter->id, true);
+        $totalFavourites        = Dogs::totalFavouritesByShelter($user->shelter);
+        $dogListingCount        = Dogs::getListingsCountByShelter($user->shelter->id);
+        $totalViews             = Dogs::totalViewsByShelter($user->shelter);
+
         if (!$user->isShelter()) {
             return false;
         }
-        $dogActiveListingsCount = Dogs::getListingsCountByShelter($user->shelter->id, true);
+
         $data[] = [
             'name' => "My Listings(Active)",
             'count' => $dogActiveListingsCount,
@@ -47,11 +53,25 @@ class ShelterService
         ];
 
 
-        $dogListingCount = Dogs::getListingsCountByShelter($user->shelter->id);
         $data[] = [
             'name' => "My Listings(All)",
             'count' => $dogListingCount,
             'url' => "/shelter/mylistings/view"
+        ];
+
+
+
+
+        $data[] = [
+            'name' => "Total Favourites",
+            'count' => $totalFavourites,
+        ];
+
+
+
+        $data[] = [
+            'name' => "Total Views",
+            'count' => $totalViews,
         ];
 
         return $data;

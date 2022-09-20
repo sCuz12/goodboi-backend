@@ -209,4 +209,41 @@ class Dogs extends Model
     {
         return DB::table('favourites')->where('dog_id', $this->id)->count();
     }
+
+    /**
+     * Gets the total number of listings favourites of a single shelter 
+     *
+     * @param  Shelter $shelter
+     * @return int
+     */
+    public static function totalFavouritesByShelter(Shelter $shelter): int
+    {
+        $listings = $shelter->dogs()->get();
+        $total    = 0;
+
+        foreach ($listings as $listing) {
+            $total += $listing->getCountOfFavourites();
+        }
+
+        return $total;
+    }
+
+    /**
+     * Gets the total number of listings views of a single shelter 
+     *
+     * @param  Shelter $shelter
+     * @return int
+     */
+    public static function totalViewsByShelter(Shelter $shelter): int
+    {
+
+        $listings   = $shelter->dogs()->get();
+        $totalViews = $listings->map(function ($item, $key) use (&$total) {
+
+            $total = $item->total_views;
+            return $total;
+        });
+
+        return array_sum($totalViews->all());
+    }
 }
