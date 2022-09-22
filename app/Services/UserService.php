@@ -57,7 +57,9 @@ class UserService
 
 
         if ($request->cover_photo) {
-            $image      = (new CoverImageUploader($request->cover_photo, "users"))->uploadImage();
+            $image      = (new CoverImageUploader($request->cover_photo, "users"))
+                ->resize()
+                ->uploadImage();
             $input = $input + ['cover_photo' => $image];
         }
 

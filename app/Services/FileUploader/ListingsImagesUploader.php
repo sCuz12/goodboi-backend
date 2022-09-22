@@ -3,7 +3,9 @@
 namespace App\Services\FileUploader;
 
 use App\Models\DogListingImages;
-use Carbon\Carbon;
+use Exception;
+use Intervention\Image\Facades\Image as Image;
+
 
 class ListingsImagesUploader implements ImagePhotoUploaderInterface
 {
@@ -37,14 +39,25 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
         }
         //Loop through the files
         foreach ($this->files as $file) {
-            $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid();
-            $file->move(public_path() . SELF::LISTING_IMAGES_PATH, $fileName);
-            $path = SELF::LISTING_IMAGES_PATH . $fileName;
-            DogListingImages::create([
-                'name' => $fileName,
-                'url'  => $path,
-                'dog_id' => $this->dog_list_id,
-            ]);
+            try {
+                $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid() . "." . $file->getClientOriginalExtension();
+                $file = $this->compress($file);
+                $file->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
+                $path = SELF::LISTING_IMAGES_PATH . $fileName;
+                DogListingImages::create([
+                    'name' => $fileName,
+                    'url'  => $path,
+                    'dog_id' => $this->dog_list_id,
+                ]);
+            } catch (Exception $e) {
+                //TODO : Log 
+                continue;
+            }
         }
+    }
+
+    public function compress($file)
+    {
+        return Image::make($file)->resize(1240, 800);
     }
 }

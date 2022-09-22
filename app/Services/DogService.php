@@ -46,7 +46,9 @@ class DogService
         }
 
 
-        $image      = (new CoverImageUploader($request->cover_photo, "listings"))->uploadImage();
+        $image = (new CoverImageUploader($request->cover_photo, "listings"))
+            ->resize()
+            ->uploadImage();
 
         $dogList    = Dogs::create($request->only('name', 'description', 'title', 'breed_id', 'dob', 'city_id', 'size') + [
             'user_id' => $user_id,
