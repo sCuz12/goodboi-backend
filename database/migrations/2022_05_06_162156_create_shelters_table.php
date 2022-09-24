@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('city_id')->nullable();
             $table->string('instagram')->nullable();
             $table->string('facebook')->nullable();
+            $table->string('facebook_pagename')->nullable();
             $table->timestamps();
         });
     }

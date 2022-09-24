@@ -28,7 +28,8 @@ class Shelter extends Model
         'city_id',
         'is_profile_complete',
         'instagram',
-        'facebook'
+        'facebook',
+        'facebook_pagename'
     ];
 
     const COVER_IMAGES_PATH = "images/cover_images/profiles/";

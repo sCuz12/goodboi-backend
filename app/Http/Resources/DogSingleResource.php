@@ -42,6 +42,7 @@ class DogSingleResource extends JsonResource
             'shelter_info' => $shelterInformation,
             'total_views'  => $this->total_views,
             'total_favourites' => $this->getCountOfFavourites(),
+            'facebook_page' => $this->shelter->facebook_pagename
         ];
     }
 }
