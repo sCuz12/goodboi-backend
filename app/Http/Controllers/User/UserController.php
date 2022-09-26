@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Resources\DogResource;
+use App\Http\Resources\ShelterSingleResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserSingleResource;
 use App\Models\User;
@@ -85,15 +86,16 @@ class UserController
     public function getLoggedInData()
     {
         $user = Auth::user();
+
         if ($user->isShelter()) {
             return [
                 'user'  => $user,
-                'shelter' => $user->shelter,
+                'shelter' => new ShelterSingleResource($user->shelter),
             ];
         }
 
         return [
-            'user'  => $user,
+            'user'  => new UserSingleResource($user),
         ];
     }
     /**
