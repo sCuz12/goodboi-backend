@@ -30,7 +30,8 @@ class Dogs extends Model
         'breed_id',
         'status_id',
         'city_id',
-        'size'
+        'size',
+        'gender'
     ];
 
     const SORTABLE_FIELDS = [

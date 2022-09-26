@@ -57,6 +57,7 @@ class DogService
             'cover_image'    => $image,
             'city_id'    => $shelter->city->id,
             'status_id' => '1',
+            'gender'    => $request->gender,
         ]);
 
         //Create health book record for the dog 
