@@ -12,6 +12,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ShelterController as ControllersShelterController;
 use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
 use App\Http\Controllers\Shelters\ShelterController;
+use App\Http\Controllers\SocialAuthFacebookController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\VaccinesController;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 
 //Only FOR Authenticated users
 Route::middleware('auth:api')->group(function () {
@@ -70,6 +72,8 @@ Route::group([
 //COMMON for all 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::get('auth/facebook', [SocialAuthFacebookController::class, 'redirectToProvider']);
+Route::get('auth/callback/facebook', [SocialAuthFacebookController::class, 'handleProviderCallback']);
 Route::post('animals/dogs', [DogsController::class, 'index']); // Display all the listings paginated
 Route::get('animals/dogs', [DogsController::class, 'index']); // Display all the listings paginated
 Route::get('get_shelters', [ShelterController::class, 'index']); // Display all the shelters 
