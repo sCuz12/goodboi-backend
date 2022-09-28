@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\OauthAccessToken;
-use App\Notifications\ResetPasswordNotification;;
+use App\Notifications\ResetPasswordNotification;
 
 /**
  * App\Models\User
@@ -61,7 +61,9 @@ class User extends Authenticatable
         'email',
         'password',
         'user_type',
-        'cover_photo'
+        'cover_photo',
+        'provider',
+        'provider_id'
     ];
 
     /**
@@ -91,6 +93,11 @@ class User extends Authenticatable
     public function favourites()
     {
         return $this->belongsToMany(Dogs::class, 'favourites', 'user_id', 'dog_id')->withTimeStamps();
+    }
+
+    public function providers()
+    {
+        return $this->hasMany(Provider::class, 'user_id', 'id');
     }
 
 
