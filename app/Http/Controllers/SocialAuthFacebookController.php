@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Interface\SocialAuthInterface;
 use App\Http\Interfaces\SocialAuthInterface as InterfacesSocialAuthInterface;
+use App\Http\Resources\UserSingleResource;
 use App\Models\User;
-use Exception;
-use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\Console\Input\Input;
@@ -32,8 +31,6 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
      */
     public function handleProviderCallback(Request $request)
     {
-
-
 
         try {
             $user     = Socialite::driver(SELF::PROVIDER_NAME)->stateless()->user();
@@ -64,8 +61,10 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
         );
 
         $token = $userCreated->createToken('user')->accessToken;
-
-        return response()->json($userCreated, 200, ['Access-Token' => $token]);
+        return [
+            'user'  => new UserSingleResource($userCreated, true),
+            'token' => $token
+        ];
     }
 
     private function split_fullname($fullname)

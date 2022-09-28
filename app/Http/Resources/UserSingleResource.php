@@ -7,6 +7,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserSingleResource extends JsonResource
 {
+    private $cdn;
+
+    public function __construct($resource, $cdn = false)
+    {
+        // Ensure we call the parent constructor
+        parent::__construct($resource);
+        $this->resource = $resource;
+        $this->cdn      = $cdn; // $apple param passed
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -21,7 +31,7 @@ class UserSingleResource extends JsonResource
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
                 'email' => $this->email,
-                'cover_photo' => $this->getProfileImagePath(),
+                'cover_photo' => $this->cdn ? $this->cover_photo : $this->getProfileImagePath(),
                 'user_type' => $this->user_type
             ];
         if ($this->user_type === UserType::SHELTER) {
