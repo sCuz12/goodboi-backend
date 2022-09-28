@@ -73,7 +73,7 @@ Route::group([
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('auth/facebook', [SocialAuthFacebookController::class, 'redirectToProvider']);
-Route::get('auth/callback/facebook', [SocialAuthFacebookController::class, 'handleProviderCallback']);
+Route::post('auth/callback/facebook', [SocialAuthFacebookController::class, 'handleProviderCallback']);
 Route::post('animals/dogs', [DogsController::class, 'index']); // Display all the listings paginated
 Route::get('animals/dogs', [DogsController::class, 'index']); // Display all the listings paginated
 Route::get('get_shelters', [ShelterController::class, 'index']); // Display all the shelters 
