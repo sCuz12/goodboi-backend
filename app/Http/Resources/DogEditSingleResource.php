@@ -29,16 +29,17 @@ class DogEditSingleResource extends JsonResource
 
 
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'name' => $this->name,
-            'description' => $this->description,
-            'cover_image' => $this->getCoverImagePath(),
-            'vaccinations_id' => $vaccinations_id ?? null,
-            'size'          => $this->size,
-            'country_id'  => $this->city->country->id,
-            'city_id'     => $this->city->id,
-            'dob'         => $this->dob
+            'id'                => $this->id,
+            'title'             => $this->title,
+            'name'              => $this->name,
+            'description'       => $this->description,
+            'cover_image'       => $this->getCoverImagePath(),
+            'vaccinations_id'   => $vaccinations_id ?? null,
+            'size'              => $this->size,
+            'country_id'        => $this->city->country->id,
+            'city_id'           => $this->city->id,
+            'dob'               => $this->dob,
+            'gender'            => $this->gender
 
         ];
     }

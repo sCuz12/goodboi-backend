@@ -47,9 +47,10 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
             ],
             [
                 'email_verified_at' => now(),
-                'first_name' => $fullname[0],
-                'last_name'  => $fullname[1],
-                'cover_photo' => $user->getAvatar()
+                'first_name'        => $fullname[0],
+                'last_name'         => $fullname[1],
+                'cover_photo'       => $user->getAvatar(),
+                'user_type'         => "user",
             ]
         );
 
