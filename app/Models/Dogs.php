@@ -147,6 +147,10 @@ class Dogs extends Model
             }
         }
 
+        if (isset($params['gender'])) {
+            $query->where('gender', $params['gender']);
+        }
+
         return $query->paginate(10);
     }
 
