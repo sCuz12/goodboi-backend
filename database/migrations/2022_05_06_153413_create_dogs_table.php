@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('dogs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
-            $table->integer('shelter_id');
+            $table->integer('shelter_id')->nullable();
+            $table->enum('listing_type', ['adopt', 'lost']);
             $table->string('title');
             $table->string('slug');
             $table->string('name');
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->integer('status_id');
             $table->integer('total_views')->default(0);
             $table->enum('gender', ['m', 'f'])->nullable();
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }

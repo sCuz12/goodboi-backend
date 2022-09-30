@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\ListingTypesEnum;
 use App\Http\Requests\CreateDogListRequest;
-use App\Http\Requests\EditDogListRequest;
-use App\Http\Resources\DogResource;
 use App\Models\AnimalHealthBook;
 use App\Models\Shelter as Shelter;
 use App\Models\Dogs;
@@ -58,6 +57,7 @@ class DogService
             'city_id'    => $shelter->city->id,
             'status_id' => '1',
             'gender'    => $request->gender,
+            'listing_type' => ListingTypesEnum::ADOPT,
         ]);
 
         //Create health book record for the dog 
@@ -135,7 +135,7 @@ class DogService
             && $request->gender === null
         ) {
             //means no params added
-            $dogs = Dogs::getAllActiveDogs();
+            $dogs = Dogs::getAllActiveAdoptionDogs();
             return $dogs;
         }
 

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             VaccinationSeeder::class,
             CountriesSeeder::class,
             CitiesSeeder::class,
+            LocationsSeeder::class,
             // DogListingStatusesSeeder::class
         ]);
     }

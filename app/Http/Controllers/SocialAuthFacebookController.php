@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserType;
 use App\Http\Interface\SocialAuthInterface;
 use App\Http\Interfaces\SocialAuthInterface as InterfacesSocialAuthInterface;
 use App\Http\Resources\UserSingleResource;
@@ -61,7 +62,8 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
             ],
         );
 
-        $token = $userCreated->createToken('user')->accessToken;
+        $token = $userCreated->createToken(UserType::USER, [UserType::USER])->accessToken;
+
         return [
             'user'  => new UserSingleResource($userCreated, true),
             'token' => $token

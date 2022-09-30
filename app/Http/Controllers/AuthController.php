@@ -23,7 +23,8 @@ class AuthController extends Controller
                 $scope = UserType::SHELTER;
                 $token = $user->createToken($scope, [$scope])->accessToken;
             } else {
-                $token = $user->createToken("user")->accessToken;
+                $scope = UserType::USER;
+                $token = $user->createToken($scope, [$scope])->accessToken;
             }
 
             return [

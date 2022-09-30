@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DogListingStatusesEnum as ListingStatuses;
+use App\Enums\ListingTypesEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,7 +32,9 @@ class Dogs extends Model
         'status_id',
         'city_id',
         'size',
-        'gender'
+        'gender',
+        'color',
+        'listing_type',
     ];
 
     const SORTABLE_FIELDS = [
@@ -93,6 +96,19 @@ class Dogs extends Model
         return $this->belongsToMany(Dogs::class, 'favourites', 'dog_id', 'user_id')->withTimestamps();
     }
 
+
+    /**
+     * Get the Lost_Dog associated with the dog.
+     * 
+     * Syntax: return $this->hasOne(LostDogs::class, 'foreign_key', 'local_key');
+     *
+     * Example: return $this->hasOne(LostDogs::class, 'user_id', 'id');        
+     */
+    public function lostDogs()
+    {
+        return $this->hasOne(LostDogs::class);
+    }
+
     /**
      * Retrieves the cover image of dog listing and append the path
      *
@@ -104,26 +120,33 @@ class Dogs extends Model
     }
 
     /**
-     * Get all active dog listings
+     * Get all active dog listings for ADOPTIONS
      *
      * @param  array $params
      * @return LengthAwarePaginator
      */
-    public static function getAllActiveDogs(): LengthAwarePaginator
+    public static function getAllActiveAdoptionDogs(): LengthAwarePaginator
     {
-        $activeDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)->paginate(12);
+
+        $activeDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
+            ->where('listing_type', ListingTypesEnum::ADOPT)
+            ->paginate(12);
         return $activeDogs;
     }
 
     /**
-     * Get listings based on the setted params
+     * Get listings fors adoptions based on the setted params
      *
      * @param  array $params
      * @return LengthAwarePaginator
      */
     public static function getListingsByParams($params): LengthAwarePaginator
     {
-        $query = Dogs::where('status_id', ListingStatuses::ACTIVE);
+        $query = Dogs::where('status_id', ListingStatuses::ACTIVE)
+            ->where('listing_type', ListingTypesEnum::ADOPT);
+
+        //only dogs for adoptions
+        $query->where('listing_type', ListingTypesEnum::ADOPT);
 
         if (isset($params['size'])) {
             $query->where('size', $params['size']);

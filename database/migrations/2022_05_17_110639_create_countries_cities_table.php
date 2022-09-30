@@ -27,6 +27,12 @@ return new class extends Migration
             $table->foreign('country_id')->references('id')->on('countries');
             $table->timestamps();
         });
+        Schema::create('locations', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('city_id');
+            $table->string('name');
+            $table->foreign('city_id')->references('id')->on('cities');
+        });
     }
 
     /**

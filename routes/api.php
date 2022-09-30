@@ -69,6 +69,16 @@ Route::group([
     Route::put('animals/{dog}/delete', [SheltersDogsController::class, 'destroy']); //Deletes a listing
 });
 
+
+//Only for USERS 
+Route::group([
+    'middleware' => ['auth:api', 'scope:user'],
+    'prefix' => 'user',
+    'namespace' => 'User'
+], function () {
+    Route::post('lost_dogs/create', [UserController::class, 'createLostDog']);
+});
+
 //COMMON for all 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
