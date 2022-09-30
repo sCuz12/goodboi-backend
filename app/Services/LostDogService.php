@@ -8,6 +8,7 @@ use App\Models\Dogs;
 use App\Models\LostDogs;
 use App\Services\FileUploader\CoverImageUploader;
 use App\Services\FileUploader\ListingsImagesUploader;
+use App\Traits\ApiResponser;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Illuminate\Http\Response as Response;
 
 class LostDogService
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, ApiResponser;
 
     /**
      * Create lost dog listing
@@ -52,9 +53,10 @@ class LostDogService
                 'reward'        => $request->reward
             ]);
 
-            return $dogListing;
+            return $this->showOne($dogListing, Response::HTTP_OK);
         } catch (Exception $e) {
-            return response(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            //TODO :LOG The error
+            return $this->errorResponse("Error occured while creating lost dog listing", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 
