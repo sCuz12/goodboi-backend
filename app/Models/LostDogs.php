@@ -10,6 +10,8 @@ class LostDogs extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function dogs(): BelongsTo
     {
         return $this->belongsTo(Dogs::class);

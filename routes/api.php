@@ -14,6 +14,7 @@ use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
 use App\Http\Controllers\Shelters\ShelterController;
 use App\Http\Controllers\SocialAuthFacebookController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserLostDogController;
 use App\Http\Controllers\VaccinesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -76,7 +77,7 @@ Route::group([
     'prefix' => 'user',
     'namespace' => 'User'
 ], function () {
-    Route::post('lost_dogs/create', [UserController::class, 'createLostDog']);
+    Route::post('lost_dogs/create', [UserLostDogController::class, 'createLostDogListing']);
 });
 
 //COMMON for all 

@@ -22,12 +22,12 @@ class DogService
     use AuthorizesRequests;
 
     /**
-     * Create dog listing to the dogs table
+     * Create dog listing  (ADOPTION) to the dogs table
      *
      * @param  CreateDogListRequest $request
      * @return Dog
      */
-    public function createDogListing(CreateDogListRequest $request)
+    public function createAdoptionDogListing(CreateDogListRequest $request)
     {
         $user = $request->user();
         try {

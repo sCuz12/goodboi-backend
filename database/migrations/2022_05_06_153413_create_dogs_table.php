@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('cover_image');
-            $table->date('dob');
+            $table->date('dob')->nullable();
             $table->string('size', 1);
             $table->integer('breed_id')->nullable();
             $table->integer('city_id');
