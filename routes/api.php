@@ -9,6 +9,7 @@ use App\Http\Controllers\EmailVerification;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ShelterController as ControllersShelterController;
 use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
 use App\Http\Controllers\Shelters\ShelterController;
@@ -41,6 +42,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('current-user', [UserController::class, 'getLoggedinUser']);
 
     Route::get('current-shelter', [UserController::class, 'getCurrentShelter']);
+    Route::get('is-normal-user', [UserController::class, 'isUserType']);
     Route::get('loggedin-user', [UserController::class, 'getLoggedInData']);
     Route::post('logout', [AuthController::class, 'logout']); // Logouts the user deletes its key 
     Route::post('email/verification', [EmailVerificationController::class, 'sendVerificationEmail']);
@@ -94,5 +96,6 @@ Route::get('countries', [CountriesController::class, 'index']);
 Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [ForgotPasswordController::class, 'passwordReset']);
 Route::get('animals/shelter/{id}', [DogsController::class, 'shelterListings']);
-Route::post('cities/all', [CityController::class, 'getAllCities']);
+Route::get('cities/', [CityController::class, 'getAllCities']);
+Route::get('locations/{city_id}', [LocationController::class, 'getLocationsByCity']);
 Route::get('shelters/{id}', [ControllersShelterController::class, 'getSingle']);

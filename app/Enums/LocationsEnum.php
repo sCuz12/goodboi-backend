@@ -146,8 +146,10 @@ final class LocationsEnum extends Enum
             "city_id" => 5
         ],
         //TODO: add more cities for Famagusta
-
-
+        [
+            "name" => "Avgorou",
+            "city_id" => 5
+        ]
 
 
     ];

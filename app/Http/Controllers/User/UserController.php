@@ -108,4 +108,17 @@ class UserController
         $dogsListings = Auth::user()->favourites->where('status_id', DogListingStatusesEnum::ACTIVE);
         return DogResource::collection($dogsListings);
     }
+
+    /**
+     * Returns if user is type of user
+     *
+     * @return void
+     */
+    public function isUserType()
+    {
+        if (!Auth::user()->isNormalUser()) {
+            return response('Not authorized', Response::HTTP_FORBIDDEN);
+        }
+        return response('ok', Response::HTTP_OK);
+    }
 }

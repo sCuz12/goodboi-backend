@@ -33,6 +33,16 @@ class City extends Model
     }
 
     /**
+     * Each City has many locations (ex:kaimakli,aglatzia)    
+     *
+     * @return HasMany
+     */
+    public function cities(): HasMany
+    {
+        return $this->hasMany(Location::class);
+    }
+
+    /**
      * Retrieves the all the cities of the specific country
      *
      * @param  mixed $countryId
