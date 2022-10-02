@@ -121,4 +121,12 @@ class UserController
         }
         return response('ok', Response::HTTP_OK);
     }
+
+    public function isShelterType()
+    {
+        if (!Auth::user()->isShelter()) {
+            return response('Not authorized', Response::HTTP_FORBIDDEN);
+        }
+        return response('ok', Response::HTTP_OK);
+    }
 }

@@ -15,6 +15,10 @@ class Location extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function lostDogs()
+    {
+        return $this->hasOne(LostDogs::class);
+    }
     /**
      * Retrieves the all the cities of the specific country
      *

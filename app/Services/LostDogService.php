@@ -53,6 +53,9 @@ class LostDogService
                 'reward'        => $request->reward
             ]);
 
+            //Handle Images upload
+            (new ListingsImagesUploader($request->images, $dogListing->title, $dogListing->id))->uploadImage();
+
             return $this->showOne($dogListing, Response::HTTP_OK);
         } catch (Exception $e) {
             //TODO :LOG The error

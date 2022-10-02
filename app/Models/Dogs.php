@@ -106,7 +106,7 @@ class Dogs extends Model
      */
     public function lostDogs()
     {
-        return $this->hasOne(LostDogs::class);
+        return $this->hasOne(LostDogs::class, 'id');
     }
 
     /**
