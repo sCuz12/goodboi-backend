@@ -14,6 +14,7 @@ use App\Http\Controllers\ShelterController as ControllersShelterController;
 use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
 use App\Http\Controllers\Shelters\ShelterController;
 use App\Http\Controllers\SocialAuthFacebookController;
+use App\Http\Controllers\User\LostDogsController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserLostDogController;
 use App\Http\Controllers\VaccinesController;
@@ -49,6 +50,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('countries', [CountryController::class, 'getCountries']);
     Route::get('cities/{countryId}', [CityController::class, 'getCitiesCountry']);
     Route::get('vaccinations', [VaccinesController::class, 'getAllVaccines']);
+    Route::get('is-shelter-user', [UserController::class, 'isShelterType']);
 
     //Favorite
     Route::post('/favourite/{dog_id}', [FavouriteController::class, 'addToFavourites']);
@@ -99,3 +101,4 @@ Route::get('animals/shelter/{id}', [DogsController::class, 'shelterListings']);
 Route::get('cities/', [CityController::class, 'getAllCities']);
 Route::get('locations/{city_id}', [LocationController::class, 'getLocationsByCity']);
 Route::get('shelters/{id}', [ControllersShelterController::class, 'getSingle']);
+Route::get('animals/lost-dogs/all', [LostDogsController::class, 'index']);

@@ -14,6 +14,10 @@ class LostDogs extends Model
 
     protected $guarded = ['id'];
 
+    const SORTABLE_FIELDS = [
+        'lost_at'
+    ];
+
     public function dogs(): BelongsTo
     {
         return $this->belongsTo(Dogs::class);
@@ -32,5 +36,23 @@ class LostDogs extends Model
             ->paginate(12);
 
         return $lostDogs;
+    }
+
+    public static function allLostDogsByParams($params)
+    {
+        $query = Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
+            ->where('listing_type', ListingTypesEnum::LOST)
+            ->join('lost_dogs', 'dogs.id', '=', 'lost_dogs.dog_id');
+
+        if (isset($params['sortBy'], $params['sortValue'])) {
+            if (in_array($params['sortBy'], self::SORTABLE_FIELDS)) {
+                $query->orderBy(
+                    $params['sortBy'],
+                    $params['sortValue']
+                );
+            }
+        }
+
+        return $query->paginate(12);
     }
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DogResource;
 use App\Http\Resources\LostDogResource;
-use App\Models\LostDogs;
+use App\Services\LostDogService;
 use Illuminate\Http\Request;
 
 class LostDogsController extends Controller
@@ -15,9 +14,9 @@ class LostDogsController extends Controller
      *
      * @return void
      */
-    public function index()
+    public function index(Request $request)
     {
-        $lostDogs = LostDogs::allActiveDogs();
+        $lostDogs = (new LostDogService())->filterLostDogsByRequest($request);
         return LostDogResource::collection($lostDogs);
     }
 }

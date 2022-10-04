@@ -66,4 +66,21 @@ class LostDogService
         //Handle Images upload
         (new ListingsImagesUploader($request->images, $dogListing->title, $dogListing->id))->uploadImage();
     }
+
+    public function filterLostDogsByRequest(Request $request)
+    {
+
+        if (!$request->sortBy) {
+            $lostDogs = LostDogs::allActiveDogs();
+            return $lostDogs;
+        }
+
+        $params = [];
+        if ($request->sortBy != null) {
+            $params['sortBy'] = $request->sortBy;
+            $params['sortValue'] = $request->sortValue ?? "desc";
+        }
+
+        return LostDogs::allLostDogsByParams($params);
+    }
 }
