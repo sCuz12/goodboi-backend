@@ -39,6 +39,7 @@ class LostDogResource extends JsonResource
             "lost_city"      => $this->lostDogs->location->city->name ?? "",
             'lost_at'        => $this->lostDogs->location->name ?? "",
             "reward"         => $this->lostDogs->reward ?? 0,
+            "owner"          => $this->user->combineName(),
         ];
 
         return $data;

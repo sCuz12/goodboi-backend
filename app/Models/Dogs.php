@@ -96,7 +96,6 @@ class Dogs extends Model
         return $this->belongsToMany(Dogs::class, 'favourites', 'dog_id', 'user_id')->withTimestamps();
     }
 
-
     /**
      * Get the Lost_Dog associated with the dog.
      * 
@@ -107,6 +106,11 @@ class Dogs extends Model
     public function lostDogs()
     {
         return $this->hasOne(LostDogs::class, 'id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
