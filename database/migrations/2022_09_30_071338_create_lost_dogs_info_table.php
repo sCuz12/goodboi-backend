@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('lost_dogs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dog_id')->constrained('dogs');
+            $table->unsignedBigInteger('dog_id')->unsigned();
             $table->date('lost_at')->nullable();
             $table->integer("reward")->nullable()->default(0);
             $table->integer("location_id");
+            $table->foreign('dog_id')->references('id')->on('dogs')->onDelete('cascade');
             $table->timestamps();
         });
     }

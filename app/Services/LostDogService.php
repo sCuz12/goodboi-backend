@@ -83,4 +83,11 @@ class LostDogService
 
         return LostDogs::allLostDogsByParams($params);
     }
+
+    public function getSingleDog(string $dogId)
+    {
+
+        $dogListing = LostDogs::findLostDogById($dogId);
+        return $dogListing;
+    }
 }

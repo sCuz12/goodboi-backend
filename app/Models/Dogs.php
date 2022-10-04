@@ -103,7 +103,7 @@ class Dogs extends Model
      *
      * Example: return $this->hasOne(LostDogs::class, 'user_id', 'id');        
      */
-    public function lostDogs()
+    public function lostDog()
     {
         return $this->hasOne(LostDogs::class, 'id');
     }

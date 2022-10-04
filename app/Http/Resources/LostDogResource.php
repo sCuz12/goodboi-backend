@@ -35,10 +35,10 @@ class LostDogResource extends JsonResource
             'listing_images' => $listingsImages,
             'size'           => $this->size,
             'gender'         => $this->gender,
-            'lost_date'      => $this->lostDogs->lost_at ?? "",
-            "lost_city"      => $this->lostDogs->location->city->name ?? "",
-            'lost_at'        => $this->lostDogs->location->name ?? "",
-            "reward"         => $this->lostDogs->reward ?? 0,
+            'lost_date'      => $this->lostDog->lost_at ?? "",
+            "lost_city"      => $this->lostDog->location->city->name ?? "",
+            'lost_at'        => $this->lostDog->location->name ?? "",
+            "reward"         => $this->lostDog->reward ?? 0,
             "owner"          => $this->user->combineName(),
         ];
 

@@ -102,3 +102,4 @@ Route::get('cities/', [CityController::class, 'getAllCities']);
 Route::get('locations/{city_id}', [LocationController::class, 'getLocationsByCity']);
 Route::get('shelters/{id}', [ControllersShelterController::class, 'getSingle']);
 Route::get('animals/lost-dogs/all', [LostDogsController::class, 'index']);
+Route::get('animals/lost-dogs/{id}', [LostDogsController::class, 'getSingle']);

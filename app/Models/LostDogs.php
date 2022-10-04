@@ -55,4 +55,17 @@ class LostDogs extends Model
 
         return $query->paginate(12);
     }
+
+    /**
+     * Returns the active dog with type lost by id
+     */
+    public static function findLostDogById(string $id): Dogs
+    {
+        $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
+            ->where('listing_type', ListingTypesEnum::LOST)
+            ->where('id', $id)
+            ->first();
+
+        return $lostDog;
+    }
 }
