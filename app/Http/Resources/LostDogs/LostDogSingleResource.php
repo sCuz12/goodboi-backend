@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\LostDogs;
 
+use App\Http\Resources\UserSingleResource;
 use App\Models\DogListingImages;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,13 +31,15 @@ class LostDogSingleResource extends JsonResource
             'name'              => $this->name,
             'description'       => $this->description,
             'image'             => $this->image,
-            'lost_date'         => Carbon::parse($this->lostDog->lost_at),
+            'lost_date'         => Carbon::parse($this->lostDog->lost_at)->format('d/m/Y'),
             'cover_image'       => $this->getCoverImagePath(),
             'listing_images'    => $listingsImages,
             'vaccinations'      => $vaccinations ?? null,
             'city'              => $this->city->name,
+            'lost_at'           => $this->lostDog->location->name ?? "",
             'gender'            => $this->gender,
-            'owner'             => $this->user->combineName(),
+            "reward"            => $this->lostDog->reward ?? 0,
+            'user'              => new UserSingleResource($this->user)
         ];
     }
 }

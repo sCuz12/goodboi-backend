@@ -64,7 +64,7 @@ class User extends Authenticatable
         'user_type',
         'cover_photo',
         'provider',
-        'provider_id'
+        'provider_id',
     ];
 
     /**
@@ -107,6 +107,16 @@ class User extends Authenticatable
         return $this->hasMany(Dogs::class);
     }
 
+    public function shelter()
+    {
+        return $this->hasOne(Shelter::class);
+    }
+
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
     public function isNormalUser()
     {
         return $this->user_type === UserType::USER;
@@ -117,10 +127,6 @@ class User extends Authenticatable
         return $this->user_type === UserType::SHELTER;
     }
 
-    public function shelter()
-    {
-        return $this->hasOne(Shelter::class);
-    }
 
     public function canEditListing(Dogs $DogListing)
     {

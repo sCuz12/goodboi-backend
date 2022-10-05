@@ -25,14 +25,16 @@ class UserSingleResource extends JsonResource
      */
     public function toArray($request)
     {
+
         $data =
             [
-                'id' => $this->id,
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
-                'email' => $this->email,
-                'cover_photo' => $this->cdn ? $this->cover_photo : $this->getProfileImagePath(),
-                'user_type' => $this->user_type
+                'id'           => $this->id,
+                'first_name'   => $this->first_name,
+                'last_name'    => $this->last_name,
+                'email'        => $this->email,
+                'cover_photo'  => $this->cdn ? $this->cover_photo : $this->getProfileImagePath(),
+                'user_type'    => $this->user_type,
+                'phone'        => $this->userProfile->phone
             ];
         if ($this->user_type === UserType::SHELTER) {
             $data['shelter'] = $this->shelter;

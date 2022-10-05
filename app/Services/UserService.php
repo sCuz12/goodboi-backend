@@ -53,8 +53,7 @@ class UserService
     {
 
         $user       = \Auth::user(); // get auth user   
-        $input      = $request->only('first_name', 'last_name', 'email');
-
+        $input      = $request->only('first_name', 'last_name', 'email', 'phone');
 
         if ($request->cover_photo) {
             $image      = (new CoverImageUploader($request->cover_photo, "users"))
@@ -63,6 +62,9 @@ class UserService
             $input = $input + ['cover_photo' => $image];
         }
 
+        if ($request->phone) {
+            $user->userProfile->update(['phone' => $request->phone]);
+        }
         $user->update($input);
 
         return $user;
