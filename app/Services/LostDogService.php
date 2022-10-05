@@ -6,9 +6,11 @@ use App\Enums\DogListingStatuses;
 use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
 use App\Models\LostDogs;
+use App\Models\User;
 use App\Services\FileUploader\CoverImageUploader;
 use App\Services\FileUploader\ListingsImagesUploader;
 use App\Traits\ApiResponser;
+use Auth;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -89,5 +91,44 @@ class LostDogService
 
         $dogListing = LostDogs::findLostDogById($dogId);
         return $dogListing;
+    }
+
+    public function getAllListingsOfUser(User $user)
+    {
+        $activeLostDogs = Dogs::getActiveLostDogsByUser($user);
+        return $activeLostDogs;
+    }
+
+    /**
+     * Handles the deletion of lost dog and return according json response
+     *
+     * @param  mixed $dogId
+     * @return void
+     */
+    public function deleteListing($dogId)
+    {
+        $listing = Dogs::find($dogId);
+
+        if (!$listing) {
+            return $this->errorResponse("Listing not found", Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$listing->isLostListingType()) {
+            return $this->errorResponse("Not a lost listing type", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $ableToDelete = Auth::user()->can('deleteLostDog', $listing);
+
+        if (!$ableToDelete) {
+            return $this->errorResponse("Not authorized", Response::HTTP_UNAUTHORIZED);
+        }
+
+        try {
+            $listing->lostDog->delete();
+            $listing->delete();
+            return $this->successResponse("Listing Deleted Succesfully", Response::HTTP_OK);
+        } catch (Exception $e) {
+            return $this->errorResponse("Failed to delete", Response::HTTP_CONFLICT);
+        }
     }
 }

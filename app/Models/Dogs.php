@@ -105,12 +105,21 @@ class Dogs extends Model
      */
     public function lostDog()
     {
-        return $this->hasOne(LostDogs::class, 'id');
+        return $this->hasOne(LostDogs::class, 'dog_id');
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Returns true if specific listing is type of lost 
+     *
+     */
+    public function isLostListingType(): bool
+    {
+        return $this->listing_type === ListingTypesEnum::LOST;
     }
 
     /**
@@ -277,5 +286,30 @@ class Dogs extends Model
         });
 
         return array_sum($totalViews->all());
+    }
+
+
+    /**
+     * Retrieves the number of active lost by user
+
+     */
+    public static function activeLostDogCountByUser(User $user): int
+    {
+        $activeDogsCount = Dogs::where('status_id', ListingStatuses::ACTIVE)
+            ->where('listing_type', ListingTypesEnum::LOST)
+            ->where('user_id', $user->id)
+            ->get()
+            ->count();
+        return $activeDogsCount;
+    }
+
+    public static function getActiveLostDogsByUser(User $user)
+    {
+        $activeLostDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
+            ->where('listing_type', ListingTypesEnum::LOST)
+            ->where('user_id', $user->id)
+            ->get();
+
+        return $activeLostDogs;
     }
 }

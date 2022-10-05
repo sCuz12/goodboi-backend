@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Enums\DogListingStatusesEnum;
-use App\Enums\UserType;
-use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Resources\DogResource;
 use App\Http\Resources\ShelterSingleResource;
@@ -12,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UserSingleResource;
 use App\Models\User;
 use App\Services\UserService;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +19,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController
 {
+    use ApiResponser;
+
     public function index()
     {
         return User::paginate();
@@ -128,5 +129,13 @@ class UserController
             return response('Not authorized', Response::HTTP_FORBIDDEN);
         }
         return response('ok', Response::HTTP_OK);
+    }
+
+    public function getStats()
+    {
+        $user = Auth::user();
+        $data = (new UserService())->getUserStats($user);
+
+        return $this->successResponse($data, Response::HTTP_OK);
     }
 }

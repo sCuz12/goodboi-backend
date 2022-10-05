@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Enums\UserType;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserCreateRequest;
+use App\Models\Dogs;
+use App\Models\Favourites;
 use App\Models\User;
 use App\Services\FileUploader\CoverImageUploader;
 use Illuminate\Support\Facades\Hash;
@@ -68,5 +70,29 @@ class UserService
         $user->update($input);
 
         return $user;
+    }
+
+    public function getUserStats(User $user): array
+    {
+        $data = [];
+
+        $userFavouritedCount = Favourites::favouritesCountByUser($user);
+        $activeLostDogCount  = Dogs::activeLostDogCountByUser($user);
+
+        $data[] = [
+            'name' => "My Favourites",
+            'count' => $userFavouritedCount,
+            'url' => "/user/favourites"
+        ];
+
+        $data[] = [
+            'name' => "Active Lost Dogs",
+            'count' => $activeLostDogCount,
+            'url' => "/user/lost-dogs/mylistings"
+        ];
+
+
+
+        return $data;
     }
 }

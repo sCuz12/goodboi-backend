@@ -92,4 +92,16 @@ class DogsPolicy
     {
         //
     }
+
+    /**
+     * Determine whether the user can delete the dog listing
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Dogs  $dogs
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function deleteLostDog(User $user, Dogs $dogs)
+    {
+        return $user->id === $dogs->user_id;
+    }
 }
