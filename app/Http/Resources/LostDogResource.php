@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\DogListingImages;
-use Carbon\Carbon;
+use App\Models\Location;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class LostDogResource extends JsonResource
@@ -24,6 +24,8 @@ class LostDogResource extends JsonResource
             return asset($image);
         }, $listingsImages);
 
+        //location
+        $location = Location::find($this->location_id);
 
         $data = [
             'id'             => $this->id,
@@ -35,10 +37,10 @@ class LostDogResource extends JsonResource
             'listing_images' => $listingsImages,
             'size'           => $this->size,
             'gender'         => $this->gender,
-            'lost_date'      => $this->lostDog->lost_at ?? "",
-            "lost_city"      => $this->lostDog->location->city->name ?? "",
-            'lost_at'        => $this->lostDog->location->name ?? "",
-            "reward"         => $this->lostDog->reward ?? 0,
+            'lost_date'      => $this->lost_at ?? "",
+            "lost_city"      => $location->city->name ?? "",
+            'lost_at'        => $location->name ?? "",
+            "reward"         => $this->reward ?? 0,
             "owner"          => $this->user->combineName(),
         ];
 

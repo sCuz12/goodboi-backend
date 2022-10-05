@@ -105,7 +105,7 @@ class Dogs extends Model
      */
     public function lostDog()
     {
-        return $this->hasOne(LostDogs::class, 'dog_id');
+        return $this->hasOne(LostDogs::class, 'dog_id', 'id');
     }
 
     public function user(): BelongsTo
