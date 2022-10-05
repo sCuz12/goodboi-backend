@@ -59,7 +59,7 @@ class LostDogs extends Model
     /**
      * Returns the active dog with type lost by id
      */
-    public static function findLostDogById(string $id): Dogs
+    public static function findLostDogById(string $id): Dogs|null
     {
         $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
             ->where('listing_type', ListingTypesEnum::LOST)
