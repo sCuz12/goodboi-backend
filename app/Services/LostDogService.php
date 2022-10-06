@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\CoverImagesPathEnum;
 use App\Enums\DogListingStatuses;
 use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
@@ -16,6 +17,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response as Response;
+use Illuminate\Support\Facades\File;
 
 class LostDogService
 {
@@ -123,11 +125,24 @@ class LostDogService
             return $this->errorResponse("Not authorized", Response::HTTP_UNAUTHORIZED);
         }
 
+        $coverImageFileName = $listing->cover_image;
+        //extract the url from collection and concat with public path
+        $listingFilesNames = $listing->dog_images->map(function ($item) {
+            return public_path($item['url']);
+        });
+
         try {
             $listing->lostDog->delete();
             $listing->delete();
+            //delete cover image
+            if (File::exists(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName))) {
+                File::delete(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName));
+            }
+            //delete listings file
+            File::delete(...$listingFilesNames);
             return $this->successResponse("Listing Deleted Succesfully", Response::HTTP_OK);
         } catch (Exception $e) {
+            //TODO : Log here
             return $this->errorResponse("Failed to delete", Response::HTTP_CONFLICT);
         }
     }
