@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Resources\LostDogResource;
+use App\Http\Resources\LostDogs\DogsLostResource;
 use App\Services\LostDogService;
 use Auth;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class UserLostDogController
         $user             = Auth::user();
         $lostDogsListings = (new LostDogService())->getAllListingsOfUser($user);
 
-        return LostDogResource::collection($lostDogsListings);
+        return DogsLostResource::collection($lostDogsListings);
     }
     public function destroy($dogId)
     {

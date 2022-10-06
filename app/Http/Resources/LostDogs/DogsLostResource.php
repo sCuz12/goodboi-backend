@@ -1,22 +1,20 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\LostDogs;
 
 use App\Models\DogListingImages;
-use App\Models\Location;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LostDogResource extends JsonResource
+class DogsLostResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * Transform the Dog collection resource into an array used in lost dogs
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
     {
-
         $listingsImages = DogListingImages::with('dogs')->where('dog_id', $this->id)->pluck('url')->toArray();
 
         // TODO : This is required? This will slow performance ?
@@ -24,11 +22,8 @@ class LostDogResource extends JsonResource
             return asset($image);
         }, $listingsImages);
 
-        //location
-        $location = Location::find($this->location_id);
-
-        $data = [
-            'dog_id'         => $this->dog_id,
+        return [
+            'dog_id'         => $this->id,
             'title'          => $this->title,
             'name'           => $this->name,
             'description'    => $this->description,
@@ -37,13 +32,11 @@ class LostDogResource extends JsonResource
             'listing_images' => $listingsImages,
             'size'           => $this->size,
             'gender'         => $this->gender,
-            'lost_date'      => $this->lost_at ?? "",
-            "lost_city"      => $location->city->name ?? "",
-            'lost_at'        => $location->name ?? "",
+            'lost_date'      => $this->lostDog->lost_at ?? "",
+            "lost_city"      => $this->city->name ?? "",
+            'lost_at'        => $this->name ?? "",
             "reward"         => $this->reward ?? 0,
             "owner"          => $this->user->combineName(),
         ];
-
-        return $data;
     }
 }
