@@ -30,7 +30,6 @@ return new class extends Migration
             $table->integer('status_id');
             $table->integer('total_views')->default(0);
             $table->enum('gender', ['m', 'f'])->nullable();
-            $table->string('color')->nullable();
             $table->timestamps();
         });
     }
