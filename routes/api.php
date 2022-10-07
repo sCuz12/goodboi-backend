@@ -85,6 +85,8 @@ Route::group([
     Route::get('lost-dogs/current/listings', [UserLostDogController::class, 'userListings']);
     Route::get('/profile/stats', [UserController::class, 'getStats']);
     Route::put('lost-dogs/delete/{dog_id}', [UserLostDogController::class, 'destroy']);
+    Route::get('lost-dogs/edit/{dog_id}', [UserLostDogController::class, 'showEdit']);
+    Route::post('lost-dogs/edit/{dog_id}', [UserLostDogController::class, 'update']);
 });
 
 //COMMON for all 

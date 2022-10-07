@@ -104,4 +104,15 @@ class DogsPolicy
     {
         return $user->id === $dogs->user_id;
     }
+    /**
+     * Determine whether the user can see the edit info
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Dogs  $dogs
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function showEditLostDog(User $user, Dogs $dogs)
+    {
+        return $user->id === $dogs->user_id;
+    }
 }

@@ -146,4 +146,22 @@ class LostDogService
             return $this->errorResponse("Failed to delete", Response::HTTP_CONFLICT);
         }
     }
+
+    public function updateListing(Request $request, string $dogId)
+    {
+        $dogListing = Dogs::findOrFail($dogId);
+
+        $ableToUpdate = Auth::user()->can('showEditLostDog', $dogListing);
+        if (!$ableToUpdate) {
+            return $this->errorResponse('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $updated = $dogListing->update($request->all());
+
+        if ($updated) {
+            return $this->successResponse($dogListing, Response::HTTP_OK);
+        } else {
+            return $this->errorResponse("Not able to update", Response::HTTP_CONFLICT);
+        }
+    }
 }
