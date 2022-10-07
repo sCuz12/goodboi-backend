@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\OauthAccessToken;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\User
@@ -63,7 +64,7 @@ class User extends Authenticatable
         'user_type',
         'cover_photo',
         'provider',
-        'provider_id'
+        'provider_id',
     ];
 
     /**
@@ -101,6 +102,21 @@ class User extends Authenticatable
     }
 
 
+    public function dogs(): HasMany
+    {
+        return $this->hasMany(Dogs::class);
+    }
+
+    public function shelter()
+    {
+        return $this->hasOne(Shelter::class);
+    }
+
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
     public function isNormalUser()
     {
         return $this->user_type === UserType::USER;
@@ -111,10 +127,6 @@ class User extends Authenticatable
         return $this->user_type === UserType::SHELTER;
     }
 
-    public function shelter()
-    {
-        return $this->hasOne(Shelter::class);
-    }
 
     public function canEditListing(Dogs $DogListing)
     {
@@ -139,5 +151,15 @@ class User extends Authenticatable
     public function getProfileImagePath()
     {
         return asset(self::PROFILE_IMAGE_PATH . $this->cover_photo);
+    }
+
+    /**
+     * Combines the name with the first letter of lastname (something like a username)
+     *
+     * @return String
+     */
+    public function combineName(): string
+    {
+        return $this->first_name . "." . substr($this->last_name, 0, 1);
     }
 }

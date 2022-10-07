@@ -16,13 +16,14 @@ return new class extends Migration
         Schema::create('dogs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
-            $table->integer('shelter_id');
+            $table->integer('shelter_id')->nullable();
+            $table->enum('listing_type', ['adopt', 'lost']);
             $table->string('title');
             $table->string('slug');
             $table->string('name');
             $table->text('description');
             $table->string('cover_image');
-            $table->date('dob');
+            $table->date('dob')->nullable();
             $table->string('size', 1);
             $table->integer('breed_id')->nullable();
             $table->integer('city_id');

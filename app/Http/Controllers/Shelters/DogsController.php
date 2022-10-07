@@ -26,7 +26,7 @@ class DogsController extends Controller
      */
     public function store(CreateDogListRequest $request)
     {
-        $dogList = (new DogService())->createDogListing($request);
+        $dogList = (new DogService())->createAdoptionDogListing($request);
         return response($dogList, Response::HTTP_ACCEPTED);
     }
 

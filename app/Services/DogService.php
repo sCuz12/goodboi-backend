@@ -2,16 +2,18 @@
 
 namespace App\Services;
 
+use App\Enums\CoverImagesPathEnum;
+use App\Enums\ListingTypesEnum;
 use App\Http\Requests\CreateDogListRequest;
-use App\Http\Requests\EditDogListRequest;
-use App\Http\Resources\DogResource;
 use App\Models\AnimalHealthBook;
 use App\Models\Shelter as Shelter;
 use App\Models\Dogs;
 use App\Models\DogsViewsLog;
 use App\Services\FileUploader\CoverImageUploader;
 use App\Services\FileUploader\ListingsImagesUploader;
+use App\Traits\ApiResponser;
 use Exception;
+use File;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,15 +22,15 @@ use Illuminate\Support\Facades\Auth;
 
 class DogService
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, ApiResponser;
 
     /**
-     * Create dog listing to the dogs table
+     * Create dog listing  (ADOPTION) to the dogs table
      *
      * @param  CreateDogListRequest $request
      * @return Dog
      */
-    public function createDogListing(CreateDogListRequest $request)
+    public function createAdoptionDogListing(CreateDogListRequest $request)
     {
         $user = $request->user();
         try {
@@ -58,6 +60,7 @@ class DogService
             'city_id'    => $shelter->city->id,
             'status_id' => '1',
             'gender'    => $request->gender,
+            'listing_type' => ListingTypesEnum::ADOPT,
         ]);
 
         //Create health book record for the dog 
@@ -135,7 +138,7 @@ class DogService
             && $request->gender === null
         ) {
             //means no params added
-            $dogs = Dogs::getAllActiveDogs();
+            $dogs = Dogs::getAllActiveAdoptionDogs();
             return $dogs;
         }
 
@@ -194,7 +197,26 @@ class DogService
             return response("You do not own this listing", Response::HTTP_FORBIDDEN);
         }
 
-        $deleted = $listing->delete();
+        $coverImageFileName = $listing->cover_image;
+        //extract the url from collection and concat with public path
+        $listingFilesNames  = $listing->dog_images->map(function ($item) {
+            return public_path($item['url']);
+        });
+
+        try {
+            $deleted = $listing->delete();
+            //TODO : refactor the delete of file cause it is repeated on lost dogs
+            //delete cover image
+            if (File::exists(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName))) {
+                File::delete(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName));
+            }
+            //delete listings file
+            File::delete(...$listingFilesNames);
+        } catch (Exception  $e) {
+            //TODO : Log action
+            return $this->errorResponse("Failed to delete", Response::HTTP_CONFLICT);
+        }
+
 
         if (!$deleted) {
             return Response('Failed to delete listing', Response::HTTP_NOT_FOUND);
