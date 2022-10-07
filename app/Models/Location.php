@@ -25,7 +25,7 @@ class Location extends Model
      * @param  mixed $countryId
      * @return Collection
      */
-    public static function getLocationsByCity($cityId)
+    public static function getLocationsByCity(string $cityId)
     {
         $locations = Location::where('city_id', $cityId)
             ->get();

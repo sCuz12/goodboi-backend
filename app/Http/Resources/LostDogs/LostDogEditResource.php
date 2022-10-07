@@ -22,7 +22,7 @@ class LostDogEditResource extends JsonResource
             'description'       => $this->description,
             'country_id'        => $this->city->country->id,
             'city_id'           => $this->city->id,
-            'lost_at'           => $this->lostDog->location->id ?? "",
+            'location_id'       => $this->lostDog->location->id ?? "",
             'gender'            => $this->gender,
             "reward"            => $this->lostDog->reward ?? 0,
             'size'              => $this->size,

@@ -24,7 +24,7 @@ class LocationController extends Controller
      *
      * @return void
      */
-    public function getLocationsByCity(int $city_id)
+    public function getLocationsByCity(string $city_id)
     {
         return Location::getLocationsByCity($city_id);
     }

@@ -155,6 +155,17 @@ class LostDogService
         if (!$ableToUpdate) {
             return $this->errorResponse('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
+        if ($request->location_id) {
+            $dogListing->lostDog->update([
+                'location_id' => $request->location_id
+            ]);
+        }
+
+        if ($request->reward) {
+            $dogListing->lostDog->update([
+                'reward' => $request->reward
+            ]);
+        }
 
         $updated = $dogListing->update($request->all());
 
