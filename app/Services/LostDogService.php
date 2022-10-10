@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CoverImagesPathEnum;
-use App\Enums\DogListingStatuses;
+use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
 use App\Models\LostDogs;
@@ -44,7 +44,7 @@ class LostDogService
                 'slug'          => Str::slug($request->title),
                 'cover_image'   => $image,
                 'city_id'       =>  $request->city_id,
-                'status_id'     => DogListingStatuses::ACTIVE,
+                'status_id'     => DogListingStatusesEnum::ACTIVE,
                 'gender'        => $request->gender,
                 'listing_type'  => ListingTypesEnum::LOST,
             ]);
