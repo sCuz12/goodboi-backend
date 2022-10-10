@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\FoundDogs;
 
 use App\Models\DogListingImages;
 use App\Models\Location;
@@ -37,9 +37,9 @@ class FoundDogsResource extends JsonResource
             'listing_images' => $listingsImages,
             'size'           => $this->size,
             'gender'         => $this->gender,
-            'found_date'     => $this->lost_at ?? "",
-            "found_city"     => $location->city->name ?? "",
-            'found_at'       => $location->name ?? "",
+            'found_date'     => $this->foundDog->found_date ?? "",
+            "found_city"     => $this->foundDog->location->city->name ?? "",
+            'found_at'       => $this->foundDog->location->name ?? "",
             "founder"        => $this->user->combineName(),
         ];
 

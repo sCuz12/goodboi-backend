@@ -2,14 +2,20 @@
 
 namespace  App\Services\User;
 
+use App\Enums\CoverImagesPathEnum;
 use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
 use App\Exceptions\CreateFoundDogListingException;
+use App\Exceptions\IncorrectListingTypeException;
+use App\Exceptions\ListingNotFoundException;
+use App\Exceptions\NotListingOwnerException;
 use App\Models\Dogs;
 use App\Models\FoundDogs;
 use App\Services\FileUploader\CoverImageUploader;
 use App\Services\FileUploader\ListingsImagesUploader;
+use Auth;
 use Exception;
+use File;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Str;
@@ -57,6 +63,76 @@ class FoundDogService
         } catch (Exception $e) {
             //TODO :LOG The error
             throw new CreateFoundDogListingException($e);
+        }
+    }
+
+    public function editFoundDogListing(string $dogId, Request $request): Dogs|false
+    {
+
+        $dogListing = Dogs::findOrFail($dogId);
+
+        if (!$dogListing) {
+            throw new ListingNotFoundException;
+        }
+
+        $ableToUpdate = Auth::user()->can('editFoundDog', $dogListing);
+
+        if (!$ableToUpdate) {
+            throw new NotListingOwnerException;
+        }
+
+        if ($request->location_id) {
+            $dogListing->foundDog->update([
+                'location_id' => $request->location_id
+            ]);
+        }
+
+        $updated = $dogListing->update($request->all());
+
+        if (!$updated) {
+            return false;
+        }
+        return $dogListing;
+    }
+
+    public function destroyFoundDogListing(string $dogId): bool
+    {
+        $dogListing = Dogs::find($dogId);
+
+        if (!$dogListing) {
+            throw new ListingNotFoundException;
+        }
+
+        if (!$dogListing->isFoundListingType()) {
+            throw new IncorrectListingTypeException;
+        }
+
+        $ableToDelete = Auth::user()->can('editFoundDog', $dogListing);
+
+        if (!$ableToDelete) {
+            throw new NotListingOwnerException;
+        }
+
+
+        $coverImageFileName = $dogListing->cover_image;
+        //extract the url from collection and concat with public path
+        $listingFilesNames = $dogListing->dog_images->map(function ($item) {
+            return public_path($item['url']);
+        });
+
+        try {
+            $dogListing->foundDog->delete();
+            $dogListing->delete();
+            //delete cover image
+            if (File::exists(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName))) {
+                File::delete(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName));
+            }
+            //delete listings file
+            File::delete(...$listingFilesNames);
+            return true;
+        } catch (Exception $e) {
+            //TODO : Log here
+            return false;
         }
     }
 }

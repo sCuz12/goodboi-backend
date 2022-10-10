@@ -91,6 +91,9 @@ Route::group([
     Route::get('lost-dogs/edit/{dog_id}', [UserLostDogController::class, 'showEdit']);
     Route::post('lost-dogs/edit/{dog_id}', [UserLostDogController::class, 'update']);
     Route::post('found-dogs/create', [UserFoundDogController::class, 'create']);
+    Route::get('found-dogs/edit/{dog_id}', [UserFoundDogController::class, 'showEdit']);
+    Route::post('found-dogs/edit/{dog_id}', [UserFoundDogController::class, 'update']);
+    Route::post('found-dogs/delete/{dog_id}', [UserFoundDogController::class, 'destroy']);
 });
 
 //COMMON for all 
@@ -113,3 +116,4 @@ Route::get('shelters/{id}', [ControllersShelterController::class, 'getSingle']);
 Route::get('animals/lost-dogs/all', [LostDogsController::class, 'index']);
 Route::get('animals/lost-dogs/{id}', [LostDogsController::class, 'getSingle']);
 Route::get('animals/found-dogs/all', [FoundDogsController::class, 'index']);
+Route::get('animals/found-dogs/{id}', [FoundDogsController::class, 'getSingle']);

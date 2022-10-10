@@ -108,6 +108,11 @@ class Dogs extends Model
         return $this->hasOne(LostDogs::class, 'dog_id', 'id');
     }
 
+    public function foundDog()
+    {
+        return $this->hasOne(FoundDogs::class, 'dog_id', 'id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -120,6 +125,15 @@ class Dogs extends Model
     public function isLostListingType(): bool
     {
         return $this->listing_type === ListingTypesEnum::LOST;
+    }
+
+    /**
+     * Returns true if specific listing is type of found 
+     *
+     */
+    public function isFoundListingType(): bool
+    {
+        return $this->listing_type === ListingTypesEnum::FOUND;
     }
 
     /**

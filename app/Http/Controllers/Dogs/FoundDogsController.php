@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Dogs;
 
+use App\Exceptions\IdNotProvidedException;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\FoundDogsResource;
+use App\Http\Resources\FoundDogs\FoundDogsResource;
+use App\Http\Resources\FoundDogs\SingleFoundDogResource;
 use App\Services\Dogs\FoundDogsService;
-use App\Services\User\FoundDogService;
-use Illuminate\Http\Request;
 
 class FoundDogsController extends Controller
 {
@@ -21,5 +21,17 @@ class FoundDogsController extends Controller
     {
         $foundDogs = $this->foundDogsService->getAllActiveFoundDogs();
         return  FoundDogsResource::collection($foundDogs);
+    }
+
+    public function getSingle($id)
+    {
+        try {
+            $foundDog = $this->foundDogsService->getActiveDogById($id);
+        } catch (IdNotProvidedException $e) {
+            return $e->render();
+        }
+
+
+        return new SingleFoundDogResource($foundDog);
     }
 }
