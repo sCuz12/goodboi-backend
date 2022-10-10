@@ -36,5 +36,7 @@ final class DogListingStatusesEnum extends Enum
         ],
     ];
 
-    const ACTIVE = "1";
+    const ACTIVE  = "1";
+    const ADOPTED = "2";
+    const DELETED = "3";
 }

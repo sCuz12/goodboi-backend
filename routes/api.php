@@ -72,6 +72,7 @@ Route::group([
     Route::get('animals/{dog}/edit', [SheltersDogsController::class, 'showEdit']); //get the info of shelter its own listing
     Route::get('current/listings', [ShelterController::class, 'shelterListings']); //get the loggedin user listings
     Route::put('animals/{dog}/delete', [SheltersDogsController::class, 'destroy']); //Deletes a listing
+    Route::post('animals/{dog}/markAsAdopted', [SheltersDogsController::class, 'markAsAdopted']);
 });
 
 

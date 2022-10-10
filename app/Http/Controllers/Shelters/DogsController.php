@@ -4,19 +4,17 @@ namespace App\Http\Controllers\Shelters;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDogListRequest;
-use App\Http\Requests\EditDogListRequest;
 use App\Http\Resources\DogEditSingleResource;
-use App\Http\Resources\DogResource;
-use App\Http\Resources\DogSingleResource;
 use App\Models\Dogs;
-use App\Services\DogService;
+use App\Services\Shelters\ActionDogService;
+use App\Traits\ApiResponser;
 use Exception;
 use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Response as Response;
 
 class DogsController extends Controller
 {
+    use ApiResponser;
 
     /**
      * TODO : Only for Shelters can allow this controller
@@ -26,14 +24,14 @@ class DogsController extends Controller
      */
     public function store(CreateDogListRequest $request)
     {
-        $dogList = (new DogService())->createAdoptionDogListing($request);
+        $dogList = (new ActionDogService())->createAdoptionDogListing($request);
         return response($dogList, Response::HTTP_ACCEPTED);
     }
 
     public function update(HttpRequest $request, $id)
     {
 
-        $dogList = (new DogService())->editDogListing($request, $id);
+        $dogList = (new ActionDogService())->editDogListing($request, $id);
 
         return response($dogList, Response::HTTP_ACCEPTED);
     }
@@ -42,7 +40,7 @@ class DogsController extends Controller
 
     public function destroy($id)
     {
-        $deleted = (new DogService())->deleteListing($id);
+        $deleted = (new ActionDogService())->deleteListing($id);
 
         return $deleted;
     }
@@ -61,5 +59,15 @@ class DogsController extends Controller
             return response("Not owner of this listing", Response::HTTP_UNAUTHORIZED);
         }
         return new DogEditSingleResource($dogListing);
+    }
+
+    /**
+     * Update the status of dog as adopted
+     *
+     * @return void
+     */
+    public function markAsAdopted($id)
+    {
+        return (new ActionDogService())->markAsAdopted($id);
     }
 }
