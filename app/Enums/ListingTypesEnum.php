@@ -13,4 +13,5 @@ final class ListingTypesEnum extends Enum
 {
     const ADOPT = "adopt";
     const LOST  = "lost";
+    const FOUND = "found";
 }
