@@ -19,6 +19,8 @@ use App\Traits\ApiResponser;
 use App\Enums\CoverImagesPathEnum;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\DogListingStatusesEnum;
+use App\Exceptions\ListingNotFoundException;
+use App\Exceptions\NotListingOwnerException;
 
 class ActionDogService
 {
@@ -167,23 +169,25 @@ class ActionDogService
     /**
      * Update the status of dog as adopted(2)
      *
-     * @return void
+     * @return bool
+     * @throws ListingNotFoundException if the listing is not found 
+     * @throws NotListingOwnerException not owner of listing
      */
     public function markAsAdopted($id)
     {
         $dogListing = Dogs::find($id);
         if (!$dogListing) {
-            return $this->errorResponse("Listing not found", Response::HTTP_NOT_FOUND);
+            throw new ListingNotFoundException();
         }
 
         try {
             $this->authorize('edit', $dogListing);
         } catch (Exception $e) {
-            return $this->errorResponse("Not owner of this listing", Response::HTTP_UNAUTHORIZED);
+            throw new NotListingOwnerException();
         }
 
         $dogListing->status_id = DogListingStatusesEnum::ADOPTED;
         $dogListing->save();
-        return $this->successResponse("ok", Response::HTTP_OK);
+        return true;
     }
 }

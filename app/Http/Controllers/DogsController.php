@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateDogListRequest;
-use App\Http\Requests\EditDogListRequest;
 use App\Http\Resources\DogResource;
 use App\Http\Resources\DogSingleResource;
 use Illuminate\Http\Request;

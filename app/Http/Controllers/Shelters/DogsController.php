@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Shelters;
 
+use App\Exceptions\ListingNotFoundException;
+use App\Exceptions\NotListingOwnerException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDogListRequest;
 use App\Http\Resources\DogEditSingleResource;
@@ -68,6 +70,15 @@ class DogsController extends Controller
      */
     public function markAsAdopted($id)
     {
-        return (new ActionDogService())->markAsAdopted($id);
+        try {
+            (new ActionDogService())->markAsAdopted($id);
+            return $this->successResponse("ok", Response::HTTP_OK);
+        } catch (ListingNotFoundException $e) {
+            return $e->render();
+        } catch (NotListingOwnerException $e) {
+            return $e->render();
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), Response::HTTP_CONFLICT);
+        }
     }
 }
