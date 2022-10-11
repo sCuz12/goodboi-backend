@@ -317,10 +317,11 @@ class Dogs extends Model
         return $activeDogsCount;
     }
 
-    public static function getActiveLostDogsByUser(User $user)
+    public static function getActiveListingsByUser(User $user)
     {
         $activeLostDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
             ->where('listing_type', ListingTypesEnum::LOST)
+            ->orWhere('listing_type', ListingTypesEnum::FOUND)
             ->where('user_id', $user->id)
             ->get();
 

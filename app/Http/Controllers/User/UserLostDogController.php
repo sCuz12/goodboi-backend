@@ -21,13 +21,6 @@ class UserLostDogController
         return (new LostDogService())->createLostDogListing($request);
     }
 
-    public function userListings()
-    {
-        $user             = Auth::user();
-        $lostDogsListings = (new LostDogService())->getAllListingsOfUser($user);
-
-        return DogsLostResource::collection($lostDogsListings);
-    }
     public function destroy($dogId)
     {
 

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\CoverImagesPathEnum;
 use App\Models\Dogs;
 use App\Models\DogsViewsLog;
+use App\Models\User;
 use App\Traits\ApiResponser;
 use Exception;
 use File;
@@ -92,5 +93,11 @@ class DogService
         }
 
         DogsViewsLog::insertViewLog($dog, $clientIp);
+    }
+
+    public function getAllListingsOfUser(User $user)
+    {
+        $activeLostDogs = Dogs::getActiveListingsByUser($user);
+        return $activeLostDogs;
     }
 }
