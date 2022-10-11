@@ -84,7 +84,7 @@ Route::group([
     'prefix' => 'user',
     'namespace' => 'User'
 ], function () {
-    Route::post('lost_dogs/create', [UserLostDogController::class, 'createLostDogListing']);
+    Route::post('lost-dogs/create', [UserLostDogController::class, 'createLostDogListing']);
     Route::get('lost-dogs/current/listings', [UserLostDogController::class, 'userListings']);
     Route::get('/profile/stats', [UserController::class, 'getStats']);
     Route::put('lost-dogs/delete/{dog_id}', [UserLostDogController::class, 'destroy']);

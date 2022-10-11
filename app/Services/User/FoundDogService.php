@@ -51,9 +51,8 @@ class FoundDogService
             //Create Lost Dog 
             $foundDogListing = FoundDogs::create([
                 'dog_id'        => $dogListing->id,
-                'found_date'       => $request->lost_date,
+                'found_date'    => $request->found_date,
                 'location_id'   => $request->location_id,
-                'reward'        => $request->reward
             ]);
 
             //Handle Images upload
