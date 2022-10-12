@@ -36,7 +36,7 @@ class SingleFoundDogResource extends JsonResource
             'listing_images'    => $listingsImages,
             'vaccinations'      => $vaccinations ?? null,
             'city'              => $this->city->name,
-            'lost_at'           => $this->foundDog->location->name ?? "",
+            'found_at'          => $this->foundDog->location->name ?? "",
             'gender'            => $this->gender,
             'user'              => new UserSingleResource($this->user)
         ];

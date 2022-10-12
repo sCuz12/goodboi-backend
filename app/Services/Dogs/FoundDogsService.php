@@ -5,6 +5,7 @@ namespace App\Services\Dogs;
 use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
 use App\Exceptions\IdNotProvidedException;
+use App\Exceptions\ListingNotFoundException;
 use App\Models\Dogs;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -45,6 +46,9 @@ class FoundDogsService
             ->where('id', $id)
             ->first();
 
+        if (!$dog) {
+            throw new ListingNotFoundException;
+        }
         return $dog;
     }
 }
