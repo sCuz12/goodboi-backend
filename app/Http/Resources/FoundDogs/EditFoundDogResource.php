@@ -25,7 +25,7 @@ class EditFoundDogResource extends JsonResource
             'location_id'       => $this->foundDog->location->id ?? "",
             'gender'            => $this->gender,
             'size'              => $this->size,
-            'lost_date'         => Carbon::parse($this->foundDog->found_at)->format('d/m/Y'),
+            'found_date'        => Carbon::parse($this->foundDog->found_at)->format('d/m/Y'),
             'listing_type'      => $this->listing_type,
         ];
     }
