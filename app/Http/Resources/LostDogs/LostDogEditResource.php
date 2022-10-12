@@ -27,6 +27,7 @@ class LostDogEditResource extends JsonResource
             "reward"            => $this->lostDog->reward ?? 0,
             'size'              => $this->size,
             'lost_date'         => Carbon::parse($this->lostDog->lost_at)->format('d/m/Y'),
+            'listing_type'      => $this->listing_type
         ];
     }
 }

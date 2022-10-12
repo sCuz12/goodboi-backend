@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DogListingStatusesEnum as ListingStatuses;
+use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -326,5 +327,17 @@ class Dogs extends Model
             ->get();
 
         return $activeLostDogs;
+    }
+
+    /**
+     * Returns the active dog with type lost by id
+     */
+    public static function findActiveListingById(string $id): Dogs|null
+    {
+        $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
+            ->where('id', $id)
+            ->first();
+
+        return $lostDog;
     }
 }
