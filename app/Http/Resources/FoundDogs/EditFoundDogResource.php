@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\LostDogs;
+namespace App\Http\Resources\FoundDogs;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LostDogEditResource extends JsonResource
+class EditFoundDogResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,12 +22,11 @@ class LostDogEditResource extends JsonResource
             'description'       => $this->description,
             'country_id'        => $this->city->country->id,
             'city_id'           => $this->city->id,
-            'location_id'       => $this->lostDog->location->id ?? "",
+            'location_id'       => $this->foundDog->location->id ?? "",
             'gender'            => $this->gender,
-            "reward"            => $this->lostDog->reward ?? 0,
             'size'              => $this->size,
-            'lost_date'         => Carbon::parse($this->lostDog->lost_at)->format('d/m/Y'),
-            'listing_type'      => $this->listing_type
+            'found_date'        => Carbon::parse($this->foundDog->found_at)->format('d/m/Y'),
+            'listing_type'      => $this->listing_type,
         ];
     }
 }

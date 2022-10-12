@@ -95,12 +95,6 @@ class LostDogService
         return $dogListing;
     }
 
-    public function getAllListingsOfUser(User $user)
-    {
-        $activeLostDogs = Dogs::getActiveLostDogsByUser($user);
-        return $activeLostDogs;
-    }
-
     /**
      * Handles the deletion of lost dog and return according json response
      *

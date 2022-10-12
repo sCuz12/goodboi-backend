@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id');
             $table->integer('shelter_id')->nullable();
-            $table->enum('listing_type', ['adopt', 'lost']);
+            $table->enum('listing_type', ['adopt', 'lost', 'found']);
             $table->string('title');
             $table->string('slug');
             $table->string('name');

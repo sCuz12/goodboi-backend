@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\Dogs\FoundDogsController;
 use App\Http\Controllers\DogsController;
 use App\Http\Controllers\EmailVerification;
 use App\Http\Controllers\EmailVerificationController;
@@ -14,9 +15,11 @@ use App\Http\Controllers\ShelterController as ControllersShelterController;
 use App\Http\Controllers\Shelters\DogsController as SheltersDogsController;
 use App\Http\Controllers\Shelters\ShelterController;
 use App\Http\Controllers\SocialAuthFacebookController;
-use App\Http\Controllers\User\LostDogsController;
+use App\Http\Controllers\Dogs\LostDogsController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserListingsController;
 use App\Http\Controllers\User\UserLostDogController;
+use App\Http\Controllers\UserFoundDogController;
 use App\Http\Controllers\VaccinesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -82,12 +85,15 @@ Route::group([
     'prefix' => 'user',
     'namespace' => 'User'
 ], function () {
-    Route::post('lost_dogs/create', [UserLostDogController::class, 'createLostDogListing']);
-    Route::get('lost-dogs/current/listings', [UserLostDogController::class, 'userListings']);
+    Route::post('lost-dogs/create', [UserLostDogController::class, 'createLostDogListing']);
+    Route::get('/current/listings', [UserListingsController::class, 'userListings']);
     Route::get('/profile/stats', [UserController::class, 'getStats']);
-    Route::put('lost-dogs/delete/{dog_id}', [UserLostDogController::class, 'destroy']);
-    Route::get('lost-dogs/edit/{dog_id}', [UserLostDogController::class, 'showEdit']);
+    Route::post('lost-dogs/delete/{dog_id}', [UserLostDogController::class, 'destroy']);
+    Route::get('mylistings/edit/{dog_id}', [UserListingsController::class, 'showEdit']);
     Route::post('lost-dogs/edit/{dog_id}', [UserLostDogController::class, 'update']);
+    Route::post('found-dogs/create', [UserFoundDogController::class, 'create']);
+    Route::post('found-dogs/edit/{dog_id}', [UserFoundDogController::class, 'update']);
+    Route::post('found-dogs/delete/{dog_id}', [UserFoundDogController::class, 'destroy']);
 });
 
 //COMMON for all 
@@ -109,3 +115,5 @@ Route::get('locations/{city_id}', [LocationController::class, 'getLocationsByCit
 Route::get('shelters/{id}', [ControllersShelterController::class, 'getSingle']);
 Route::get('animals/lost-dogs/all', [LostDogsController::class, 'index']);
 Route::get('animals/lost-dogs/{id}', [LostDogsController::class, 'getSingle']);
+Route::get('animals/found-dogs/all', [FoundDogsController::class, 'index']);
+Route::get('animals/found-dogs/{id}', [FoundDogsController::class, 'getSingle']);

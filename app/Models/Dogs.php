@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DogListingStatusesEnum as ListingStatuses;
+use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -108,6 +109,11 @@ class Dogs extends Model
         return $this->hasOne(LostDogs::class, 'dog_id', 'id');
     }
 
+    public function foundDog()
+    {
+        return $this->hasOne(FoundDogs::class, 'dog_id', 'id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -120,6 +126,15 @@ class Dogs extends Model
     public function isLostListingType(): bool
     {
         return $this->listing_type === ListingTypesEnum::LOST;
+    }
+
+    /**
+     * Returns true if specific listing is type of found 
+     *
+     */
+    public function isFoundListingType(): bool
+    {
+        return $this->listing_type === ListingTypesEnum::FOUND;
     }
 
     /**
@@ -303,13 +318,26 @@ class Dogs extends Model
         return $activeDogsCount;
     }
 
-    public static function getActiveLostDogsByUser(User $user)
+    public static function getActiveListingsByUser(User $user)
     {
         $activeLostDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
             ->where('listing_type', ListingTypesEnum::LOST)
+            ->orWhere('listing_type', ListingTypesEnum::FOUND)
             ->where('user_id', $user->id)
             ->get();
 
         return $activeLostDogs;
+    }
+
+    /**
+     * Returns the active dog with type lost by id
+     */
+    public static function findActiveListingById(string $id): Dogs|null
+    {
+        $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
+            ->where('id', $id)
+            ->first();
+
+        return $lostDog;
     }
 }

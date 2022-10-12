@@ -20,17 +20,18 @@ class DogResource extends JsonResource
 
 
         $data = [
-            'id' => $this->id,
-            'title' => $this->title,
-            'name' => $this->name,
-            'description' => $this->description,
-            'cover_image' => $this->getCoverImagePath(),
-            'age'         => Carbon::parse($this->dob)->age,
-            'city'        => $this->city->name ?? null,
-            'size'        => $this->size,
-            'slug'        => $this->slug,
-            'total_views' => $this->total_views,
-            'gender'      => $this->gender,
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'name'         => $this->name,
+            'description'  => $this->description,
+            'cover_image'  => $this->getCoverImagePath(),
+            'age'          => Carbon::parse($this->dob)->age,
+            'city'         => $this->city->name ?? null,
+            'size'         => $this->size,
+            'slug'         => $this->slug,
+            'total_views'  => $this->total_views,
+            'gender'       => $this->gender,
+            'listing_type' => $this->listing_type,
         ];
 
         if (auth('api')->user()) {
