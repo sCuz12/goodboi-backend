@@ -71,8 +71,12 @@ class DogService
      * @param  integer $shelter_id
      * @return LengthAwarePaginator
      */
-    public function getAllListingsOfShelter($shelter_id)
+    public function getAllListingsOfShelter($shelter_id, Request $request)
     {
+        if ($request->status) {
+            return Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'status' => $request->status]);
+        }
+
         $results = Dogs::getListingsByParams(['shelter_id' => $shelter_id]);
         return $results;
     }

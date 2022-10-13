@@ -47,10 +47,10 @@ class ShelterController extends Controller
      *
      * @return JSON
      */
-    public function shelterListings()
+    public function shelterListings(Request $request)
     {
         $user = Auth::user();
-        $listings = (new DogService())->getAllListingsOfShelter($user->shelter->id);
+        $listings = (new DogService())->getAllListingsOfShelter($user->shelter->id, $request);
         return DogResource::collection($listings);
     }
 

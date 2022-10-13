@@ -170,8 +170,8 @@ class Dogs extends Model
      */
     public static function getListingsByParams($params): LengthAwarePaginator
     {
-        $query = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::ADOPT);
+
+        $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
 
         //only dogs for adoptions
         $query->where('listing_type', ListingTypesEnum::ADOPT);
@@ -186,6 +186,13 @@ class Dogs extends Model
 
         if (isset($params['city'])) {
             $query->whereIn('city_id', $params['city']);
+        }
+
+        if (isset($params['status'])) {
+            $query->where('status_id', $params['status']);
+        } else {
+            //default active
+            $query->where('status_id', ListingStatuses::ACTIVE);
         }
 
         if (isset($params['sortField'], $params['sortValue'])) {
