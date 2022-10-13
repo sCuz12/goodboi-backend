@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Enums\DogListingStatusesEnum;
 use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\NotListingOwnerException;
+use App\Exceptions\UnableToDeleteListingException;
 
 class ActionDogService
 {
@@ -132,11 +133,15 @@ class ActionDogService
     {
         $listing = Dogs::find($id);
 
+        if (!$listing instanceof Dogs) {
+            throw new ListingNotFoundException;
+        }
+
         $ableToUpdate = Auth::user()->can('update', $listing);
 
         //check the permissions
         if (!$ableToUpdate) {
-            return response("You do not own this listing", Response::HTTP_FORBIDDEN);
+            throw new NotListingOwnerException;
         }
 
         $coverImageFileName = $listing->cover_image;
@@ -147,6 +152,7 @@ class ActionDogService
 
         try {
             $deleted = $listing->delete();
+            return response($deleted);
             //TODO : refactor the delete of file cause it is repeated on lost dogs
             //delete cover image
             if (File::exists(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName))) {
@@ -156,7 +162,7 @@ class ActionDogService
             File::delete(...$listingFilesNames);
         } catch (Exception  $e) {
             //TODO : Log action
-            return $this->errorResponse("Failed to delete", Response::HTTP_CONFLICT);
+            throw new UnableToDeleteListingException;
         }
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shelters;
 
 use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\NotListingOwnerException;
+use App\Exceptions\UnableToDeleteListingException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDogListRequest;
 use App\Http\Resources\DogEditSingleResource;
@@ -42,9 +43,16 @@ class DogsController extends Controller
 
     public function destroy($id)
     {
-        $deleted = (new ActionDogService())->deleteListing($id);
+        try {
+            $deleted = (new ActionDogService())->deleteListing($id);
+        } catch (
+            NotListingOwnerException   |
+            UnableToDeleteListingException $e
+        ) {
+            return $e->render();
+        }
 
-        return $deleted;
+        return $this->successResponse("Listing Delete succesfully", Response::HTTP_ACCEPTED);
     }
 
     /**
