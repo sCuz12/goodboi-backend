@@ -8,6 +8,8 @@ use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\NotListingOwnerException;
 use App\Http\Resources\FoundDogs\EditFoundDogResource;
 use App\Services\Dogs\FoundDogsService;
+use App\Services\DogService;
+use App\Services\Shelters\ActionDogService;
 use App\Services\User\FoundDogService;
 use App\Traits\ApiResponser;
 use Auth;
@@ -69,13 +71,10 @@ class UserFoundDogController extends Controller
     public function destroy($id)
     {
         try {
-            $deleted = $this->foundDogService->destroyFoundDogListing($id);
-
-            return $this->successResponse("ok", Response::HTTP_ACCEPTED);
+            (new ActionDogService())->deleteListing($id);
+            return $this->successResponse("Listing Deleted succesfully", Response::HTTP_ACCEPTED);
         } catch (
             ListingNotFoundException
-            |
-            IncorrectListingTypeException
             |
             NotListingOwnerException $e
         ) {

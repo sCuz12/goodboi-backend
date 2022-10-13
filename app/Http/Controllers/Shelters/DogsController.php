@@ -70,7 +70,7 @@ class DogsController extends Controller
             return $e->render();
         }
 
-        return $this->successResponse("Listing Delete succesfully", Response::HTTP_ACCEPTED);
+        return $this->successResponse("Listing Deleted succesfully", Response::HTTP_ACCEPTED);
     }
 
     /**

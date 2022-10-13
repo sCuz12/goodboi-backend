@@ -158,10 +158,15 @@ class ActionDogService
             throw new ListingNotFoundException;
         }
 
-        $ableToUpdate = Auth::user()->can('update', $listing);
+        if ($listing->isAdoptionListingType()) {
+            $ableToDelete = Auth::user()->can('update', $listing);
+        } else {
+            $ableToDelete = Auth::user()->can('deleteLostDog', $listing);
+        }
+
 
         //check the permissions
-        if (!$ableToUpdate) {
+        if (!$ableToDelete) {
             throw new NotListingOwnerException;
         }
 
@@ -188,9 +193,9 @@ class ActionDogService
 
 
         if (!$deleted) {
-            return Response('Failed to delete listing', Response::HTTP_NOT_FOUND);
+            throw new UnableToDeleteListingException;
         }
-        return Response('Listing deleted succesfully', Response::HTTP_ACCEPTED);
+        return true;
     }
 
     /**

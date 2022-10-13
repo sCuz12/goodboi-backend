@@ -17,6 +17,6 @@ class UnableToUploadListingException extends Exception
 
     public function render()
     {
-        return $this->errorResponse("Uploading listing failed!", Response::HTTP_UNAUTHORIZED);
+        return $this->errorResponse("Uploading listing failed!", Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
