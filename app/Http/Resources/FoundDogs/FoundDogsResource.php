@@ -33,6 +33,7 @@ class FoundDogsResource extends JsonResource
             'name'           => $this->name,
             'description'    => $this->description,
             'image'          => $this->image,
+            'listing_type'   => $this->listing_type,
             'cover_image'    => $this->getCoverImagePath(),
             'listing_images' => $listingsImages,
             'size'           => $this->size,

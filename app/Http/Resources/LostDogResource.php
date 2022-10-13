@@ -32,6 +32,7 @@ class LostDogResource extends JsonResource
             'title'          => $this->title,
             'name'           => $this->name,
             'description'    => $this->description,
+            'listing_type'   => $this->listing_type,
             'image'          => $this->image,
             'cover_image'    => $this->getCoverImagePath(),
             'listing_images' => $listingsImages,
