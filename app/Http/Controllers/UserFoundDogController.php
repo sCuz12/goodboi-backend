@@ -31,7 +31,7 @@ class UserFoundDogController extends Controller
     {
         try {
             $dogListing = $this->foundDogService->createFoundDogListing($request);
-            return $this->successResponse($dogListing, Response::HTTP_OK);
+            return $this->successResponse($dogListing, Response::HTTP_ACCEPTED);
         } catch (CreateFoundDogListingException $e) {
             return $e->render();
         }
@@ -60,7 +60,7 @@ class UserFoundDogController extends Controller
                 return $this->errorResponse("Found dog not updated", Response::HTTP_CONFLICT);
             }
 
-            return $this->successResponse($dogListing, Response::HTTP_OK);
+            return $this->successResponse($dogListing, Response::HTTP_ACCEPTED);
         } catch (NotListingOwnerException | ListingNotFoundException $e) {
             return $e->render();
         }
@@ -71,7 +71,7 @@ class UserFoundDogController extends Controller
         try {
             $deleted = $this->foundDogService->destroyFoundDogListing($id);
 
-            return $this->successResponse("ok", Response::HTTP_OK);
+            return $this->successResponse("ok", Response::HTTP_ACCEPTED);
         } catch (
             ListingNotFoundException
             |

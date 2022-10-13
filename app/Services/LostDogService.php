@@ -60,7 +60,7 @@ class LostDogService
             //Handle Images upload
             (new ListingsImagesUploader($request->images, $dogListing->title, $dogListing->id))->uploadImage();
 
-            return $this->showOne($dogListing, Response::HTTP_OK);
+            return $this->showOne($dogListing, Response::HTTP_ACCEPTED);
         } catch (Exception $e) {
             //TODO :LOG The error
             return $this->errorResponse("Error occured while creating lost dog listing", Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -134,7 +134,7 @@ class LostDogService
             }
             //delete listings file
             File::delete(...$listingFilesNames);
-            return $this->successResponse("Listing Deleted Succesfully", Response::HTTP_OK);
+            return $this->successResponse("Listing Deleted Succesfully", Response::HTTP_ACCEPTED);
         } catch (Exception $e) {
             //TODO : Log here
             return $this->errorResponse("Failed to delete", Response::HTTP_CONFLICT);
@@ -164,7 +164,7 @@ class LostDogService
         $updated = $dogListing->update($request->all());
 
         if ($updated) {
-            return $this->successResponse($dogListing, Response::HTTP_OK);
+            return $this->successResponse($dogListing, Response::HTTP_ACCEPTED);
         } else {
             return $this->errorResponse("Not able to update", Response::HTTP_CONFLICT);
         }
