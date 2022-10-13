@@ -347,4 +347,14 @@ class Dogs extends Model
 
         return $lostDog;
     }
+
+    public static function adoptedListingsCountByUser(Shelter $shelter)
+    {
+        $adoptedListingsCount = Dogs::where('status_id', ListingStatuses::ADOPTED)
+            ->where('listing_type', ListingTypesEnum::ADOPT)
+            ->where('shelter_id', $shelter->id)
+            ->get()
+            ->count();
+        return $adoptedListingsCount;
+    }
 }

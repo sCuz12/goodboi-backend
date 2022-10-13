@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DogListingStatusesEnum;
 use App\Models\Dogs;
 use App\Models\Shelter as Shelter;
 use App\Models\User;
@@ -41,6 +42,7 @@ class ShelterService
         $totalFavourites        = Dogs::totalFavouritesByShelter($user->shelter);
         $dogListingCount        = Dogs::getListingsCountByShelter($user->shelter->id);
         $totalViews             = Dogs::totalViewsByShelter($user->shelter);
+        $adoptedListings        = Dogs::adoptedListingsCountByUser($user->shelter);
 
         if (!$user->isShelter()) {
             return false;
@@ -60,6 +62,10 @@ class ShelterService
         ];
 
 
+        $data[] = [
+            'name' => "My Listings (Adopted)",
+            'count' => $adoptedListings,
+        ];
 
 
         $data[] = [
@@ -73,6 +79,8 @@ class ShelterService
             'name' => "Total Views",
             'count' => $totalViews,
         ];
+
+
 
         return $data;
     }
