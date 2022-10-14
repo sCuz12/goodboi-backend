@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Shelters;
 use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\MissingShelterInfoException;
 use App\Exceptions\NotListingOwnerException;
+use App\Exceptions\NotShelterAccountException;
 use App\Exceptions\UnableToDeleteListingException;
 use App\Exceptions\UnableToEditListingException;
 use App\Exceptions\UnableToUploadListingException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDogListRequest;
 use App\Http\Resources\DogEditSingleResource;
-use App\Models\Dogs;
 use App\Services\Shelters\ActionDogService;
 use App\Traits\ApiResponser;
 use Exception;
@@ -35,9 +35,11 @@ class DogsController extends Controller
         } catch (
             MissingShelterInfoException
             | UnableToUploadListingException
-            | NotListingOwnerException $e
+            | NotShelterAccountException $e
         ) {
-            $e->render();
+            return $e->render();
+        } catch (Exception $e) {
+            return response("Something went wrong", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return response($dogList, Response::HTTP_ACCEPTED);

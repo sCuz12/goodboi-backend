@@ -22,6 +22,7 @@ use App\Enums\DogListingStatusesEnum;
 use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\MissingShelterInfoException;
 use App\Exceptions\NotListingOwnerException;
+use App\Exceptions\NotShelterAccountException;
 use App\Exceptions\UnableToDeleteListingException;
 use App\Exceptions\UnableToEditListingException;
 use App\Exceptions\UnableToUploadListingException;
@@ -43,7 +44,7 @@ class ActionDogService
         $ableToCreate = $this->authorize('create', Dogs::class);
 
         if (!$ableToCreate) {
-            throw new NotListingOwnerException;
+            throw new NotShelterAccountException;
         }
 
         $user_id    = $user->id;
@@ -157,6 +158,7 @@ class ActionDogService
         if (!$listing instanceof Dogs) {
             throw new ListingNotFoundException;
         }
+
 
         if ($listing->isAdoptionListingType()) {
             $ableToDelete = Auth::user()->can('update', $listing);
