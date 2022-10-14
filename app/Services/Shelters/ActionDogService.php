@@ -20,8 +20,12 @@ use App\Enums\CoverImagesPathEnum;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\DogListingStatusesEnum;
 use App\Exceptions\ListingNotFoundException;
+use App\Exceptions\MissingShelterInfoException;
 use App\Exceptions\NotListingOwnerException;
+use App\Exceptions\NotShelterAccountException;
 use App\Exceptions\UnableToDeleteListingException;
+use App\Exceptions\UnableToEditListingException;
+use App\Exceptions\UnableToUploadListingException;
 
 class ActionDogService
 {
@@ -36,50 +40,58 @@ class ActionDogService
     public function createAdoptionDogListing(CreateDogListRequest $request)
     {
         $user = $request->user();
-        try {
-            $this->authorize('create', Dogs::class);
-        } catch (Exception $e) {
-            return response("Not a shelter", Response::HTTP_UNAUTHORIZED);
+
+        $ableToCreate = $this->authorize('create', Dogs::class);
+
+        if (!$ableToCreate) {
+            throw new NotShelterAccountException;
         }
 
         $user_id    = $user->id;
-
         $shelter    = Shelter::where('user_id', $user_id)->first();
 
         if ($shelter == null) {
-            return response("Need to update shelter profile information", Response::HTTP_UNAUTHORIZED);
+            throw new MissingShelterInfoException;
+        }
+
+        try {
+            $image = (new CoverImageUploader($request->cover_photo, "listings"))
+                ->resize()
+                ->uploadImage();
+
+            $dogList    = Dogs::create($request->only('name', 'description', 'title', 'breed_id', 'dob', 'city_id', 'size') + [
+                'user_id' => $user_id,
+                'shelter_id' => $shelter->id,
+                'slug'     => Str::slug($request->title),
+                'cover_image'    => $image,
+                'city_id'    => $shelter->city->id,
+                'status_id' => '1',
+                'gender'    => $request->gender,
+                'listing_type' => ListingTypesEnum::ADOPT,
+            ]);
+
+            //Create health book record for the dog 
+            $animalBook = AnimalHealthBook::create([
+                'dog_id' => $dogList->id,
+            ]);
+            //TODO : Investigate if works well
+
+            //Add the vaccinations into pivot table
+            if ($request->vaccinations) {
+                $animalBook->vaccinations()->attach($request->vaccinations);
+            }
+
+
+            //Handle Images upload
+            (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage();
+        } catch (Exception $e) {
+            throw new UnableToUploadListingException;
         }
 
 
-        $image = (new CoverImageUploader($request->cover_photo, "listings"))
-            ->resize()
-            ->uploadImage();
-
-        $dogList    = Dogs::create($request->only('name', 'description', 'title', 'breed_id', 'dob', 'city_id', 'size') + [
-            'user_id' => $user_id,
-            'shelter_id' => $shelter->id,
-            'slug'     => Str::slug($request->title),
-            'cover_image'    => $image,
-            'city_id'    => $shelter->city->id,
-            'status_id' => '1',
-            'gender'    => $request->gender,
-            'listing_type' => ListingTypesEnum::ADOPT,
-        ]);
-
-        //Create health book record for the dog 
-        $animalBook = AnimalHealthBook::create([
-            'dog_id' => $dogList->id,
-        ]);
-        //TODO : Investigate if works well
-
-        //Add the vaccinations into pivot table
-        if ($request->vaccinations) {
-            $animalBook->vaccinations()->attach($request->vaccinations);
-        }
 
 
-        //Handle Images upload
-        (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage();
+
 
         return $dogList;
     }
@@ -93,32 +105,42 @@ class ActionDogService
      */
     public function editDogListing(Request $request, int $dogList_id)
     {
+
         $dogList = Dogs::findOrFail($dogList_id);
         //Checks if its dog post owner
+        if (!$dogList instanceof Dogs) {
+            throw new ListingNotFoundException;
+        }
+
+        $ableToUpdate = Auth::user()->can('update', $dogList);
+
+        if (!$ableToUpdate) {
+            throw new NotListingOwnerException;
+        }
+
         try {
-            $this->authorize('update', $dogList);
-        } catch (Exception $e) {
-            return response("Not owner of this listing", Response::HTTP_UNAUTHORIZED);
+            if ($request->cover_photo) {
+                $image      = (new CoverImageUploader($request->cover_photo, "listings"))->uploadImage();
+                $request->request->add(['cover_image' => $image]);
+            }
+
+            $dogList->update($request->all());
+
+            //Handle Vaccinations update 
+            if ($request->vaccinations) {
+                $animalBook = AnimalHealthBook::where('dog_id', $dogList->id)->first();
+                $animalBook->vaccinations()->sync($request->vaccinations, ['dog_id', $dogList->id]);
+            }
+
+            //Handle Images upload if listing image are changed
+            if ($request->images) {
+
+                (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage(true);
+            }
+        } catch (\Throwable $th) {
+            throw new UnableToEditListingException;
         }
 
-        if ($request->cover_photo) {
-            $image      = (new CoverImageUploader($request->cover_photo, "listings"))->uploadImage();
-            $request->request->add(['cover_image' => $image]);
-        }
-
-        $dogList->update($request->all());
-
-        //Handle Vaccinations update 
-        if ($request->vaccinations) {
-            $animalBook = AnimalHealthBook::where('dog_id', $dogList->id)->first();
-            $animalBook->vaccinations()->sync($request->vaccinations, ['dog_id', $dogList->id]);
-        }
-
-        //Handle Images upload if listing image are changed
-        if ($request->images) {
-
-            (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage(true);
-        }
 
         return $dogList;
     }
@@ -137,10 +159,16 @@ class ActionDogService
             throw new ListingNotFoundException;
         }
 
-        $ableToUpdate = Auth::user()->can('update', $listing);
+
+        if ($listing->isAdoptionListingType()) {
+            $ableToDelete = Auth::user()->can('update', $listing);
+        } else {
+            $ableToDelete = Auth::user()->can('deleteLostDog', $listing);
+        }
+
 
         //check the permissions
-        if (!$ableToUpdate) {
+        if (!$ableToDelete) {
             throw new NotListingOwnerException;
         }
 
@@ -167,9 +195,9 @@ class ActionDogService
 
 
         if (!$deleted) {
-            return Response('Failed to delete listing', Response::HTTP_NOT_FOUND);
+            throw new UnableToDeleteListingException;
         }
-        return Response('Listing deleted succesfully', Response::HTTP_ACCEPTED);
+        return true;
     }
 
     /**
@@ -195,5 +223,22 @@ class ActionDogService
         $dogListing->status_id = DogListingStatusesEnum::ADOPTED;
         $dogListing->save();
         return true;
+    }
+
+    public function showEdit($id)
+    {
+        $dogListing = Dogs::findOrFail($id);
+
+        if (!$dogListing instanceof Dogs) {
+            throw new ListingNotFoundException;
+        }
+
+        $ableToUpdate = Auth::user()->can('update', $dogListing);
+
+        if (!$ableToUpdate) {
+            throw new NotListingOwnerException;
+        }
+
+        return $dogListing;
     }
 }

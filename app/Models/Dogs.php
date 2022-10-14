@@ -137,6 +137,11 @@ class Dogs extends Model
         return $this->listing_type === ListingTypesEnum::FOUND;
     }
 
+    public function isAdoptionListingType(): bool
+    {
+        return $this->listing_type === ListingTypesEnum::ADOPT;
+    }
+
     /**
      * Retrieves the cover image of dog listing and append the path
      *

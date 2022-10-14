@@ -33,7 +33,7 @@ class DogsController extends Controller
      */
     public function showById($id)
     {
-        $dog = Dogs::findById($id);
+        $dog = (new DogService())->getSingleDog($id);
         //Handle not found
         if (!$dog) {
             return response("Listing not found", 404);

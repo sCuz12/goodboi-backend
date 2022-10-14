@@ -88,7 +88,7 @@ class UserService
         $data[] = [
             'name' => "Active Lost Dogs",
             'count' => $activeLostDogCount,
-            'url' => "/user/lost-dogs/mylistings"
+            'url' => "/user/mylistings"
         ];
 
 

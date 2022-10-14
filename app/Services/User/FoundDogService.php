@@ -93,45 +93,4 @@ class FoundDogService
         }
         return $dogListing;
     }
-
-    public function destroyFoundDogListing(string $dogId): bool
-    {
-        $dogListing = Dogs::find($dogId);
-
-        if (!$dogListing) {
-            throw new ListingNotFoundException;
-        }
-
-        if (!$dogListing->isFoundListingType()) {
-            throw new IncorrectListingTypeException;
-        }
-
-        $ableToDelete = Auth::user()->can('editFoundDog', $dogListing);
-
-        if (!$ableToDelete) {
-            throw new NotListingOwnerException;
-        }
-
-
-        $coverImageFileName = $dogListing->cover_image;
-        //extract the url from collection and concat with public path
-        $listingFilesNames = $dogListing->dog_images->map(function ($item) {
-            return public_path($item['url']);
-        });
-
-        try {
-            $dogListing->foundDog->delete();
-            $dogListing->delete();
-            //delete cover image
-            if (File::exists(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName))) {
-                File::delete(public_path(CoverImagesPathEnum::LISTINGS . "/" . $coverImageFileName));
-            }
-            //delete listings file
-            File::delete(...$listingFilesNames);
-            return true;
-        } catch (Exception $e) {
-            //TODO : Log here
-            return false;
-        }
-    }
 }

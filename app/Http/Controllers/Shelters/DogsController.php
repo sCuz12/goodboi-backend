@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Shelters;
 
 use App\Exceptions\ListingNotFoundException;
+use App\Exceptions\MissingShelterInfoException;
 use App\Exceptions\NotListingOwnerException;
+use App\Exceptions\NotShelterAccountException;
 use App\Exceptions\UnableToDeleteListingException;
+use App\Exceptions\UnableToEditListingException;
+use App\Exceptions\UnableToUploadListingException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDogListRequest;
 use App\Http\Resources\DogEditSingleResource;
-use App\Models\Dogs;
 use App\Services\Shelters\ActionDogService;
 use App\Traits\ApiResponser;
 use Exception;
@@ -27,14 +30,31 @@ class DogsController extends Controller
      */
     public function store(CreateDogListRequest $request)
     {
-        $dogList = (new ActionDogService())->createAdoptionDogListing($request);
+        try {
+            $dogList = (new ActionDogService())->createAdoptionDogListing($request);
+        } catch (
+            MissingShelterInfoException
+            | UnableToUploadListingException
+            | NotShelterAccountException $e
+        ) {
+            return $e->render();
+        } catch (Exception $e) {
+            return response("Something went wrong", Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         return response($dogList, Response::HTTP_ACCEPTED);
     }
 
     public function update(HttpRequest $request, $id)
     {
-
-        $dogList = (new ActionDogService())->editDogListing($request, $id);
+        try {
+            $dogList = (new ActionDogService())->editDogListing($request, $id);
+        } catch (
+            NotListingOwnerException
+            | ListingNotFoundException | UnableToEditListingException $e
+        ) {
+            return $e->render();
+        }
 
         return response($dogList, Response::HTTP_ACCEPTED);
     }
@@ -52,7 +72,7 @@ class DogsController extends Controller
             return $e->render();
         }
 
-        return $this->successResponse("Listing Delete succesfully", Response::HTTP_ACCEPTED);
+        return $this->successResponse("Listing Deleted succesfully", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -62,12 +82,16 @@ class DogsController extends Controller
      */
     public function showEdit($id)
     {
-        $dogListing = Dogs::findOrFail($id);
+
         try {
-            $this->authorize('edit', $dogListing);
+            $dogListing = (new  ActionDogService())->showEdit($id);
+        } catch (ListingNotFoundException | NotListingOwnerException $e) {
+
+            return $e->render();
         } catch (Exception $e) {
-            return response("Not owner of this listing", Response::HTTP_UNAUTHORIZED);
+            //TODO: Handle general 
         }
+
         return new DogEditSingleResource($dogListing);
     }
 
@@ -81,9 +105,7 @@ class DogsController extends Controller
         try {
             (new ActionDogService())->markAsAdopted($id);
             return $this->successResponse("ok", Response::HTTP_OK);
-        } catch (ListingNotFoundException $e) {
-            return $e->render();
-        } catch (NotListingOwnerException $e) {
+        } catch (ListingNotFoundException | NotListingOwnerException $e) {
             return $e->render();
         } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), Response::HTTP_CONFLICT);

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Dogs;
 
+use App\Enums\ListingTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LostDogResource;
 use App\Http\Resources\LostDogs\LostDogSingleResource;
+use App\Services\DogService;
 use App\Services\LostDogService;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -19,13 +21,13 @@ class LostDogsController extends Controller
      */
     public function index(Request $request)
     {
-        $lostDogs = (new LostDogService())->filterLostDogsByRequest($request);
+        $lostDogs = (new DogService())->filterDogsByRequest($request, ListingTypesEnum::LOST);
         return LostDogResource::collection($lostDogs);
     }
 
     public function getSingle(string $dogId)
     {
-        $lostDog = (new LostDogService())->getSingleDog($dogId);
+        $lostDog = (new DogService())->getSingleDog($dogId);
 
         if (!$lostDog) {
             return $this->errorResponse("Listing not found", 404);

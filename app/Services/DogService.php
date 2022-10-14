@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Enums\CoverImagesPathEnum;
+use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
 use App\Models\DogsViewsLog;
+use App\Models\LostDogs;
 use App\Models\User;
 use App\Traits\ApiResponser;
 use Exception;
@@ -24,7 +26,7 @@ class DogService
      * @param  Request $request
      * @return LengthAwarePaginator
      */
-    public function filterDogsByRequest(Request $request)
+    public function filterDogsByRequest(Request $request, string $type = ListingTypesEnum::ADOPT)
     {
 
         if (
@@ -34,9 +36,17 @@ class DogService
             && $request->sort === null
             && $request->gender === null
         ) {
+
             //means no params added
-            $dogs = Dogs::getAllActiveAdoptionDogs();
-            return $dogs;
+            switch ($type) {
+                case ListingTypesEnum::ADOPT:
+                    return Dogs::getAllActiveAdoptionDogs();
+                    break;
+                case ListingTypesEnum::LOST:
+                    return LostDogs::allActiveDogs();
+                    break;
+                default;
+            }
         }
 
         $params = [];
@@ -79,6 +89,18 @@ class DogService
 
         $results = Dogs::getListingsByParams(['shelter_id' => $shelter_id]);
         return $results;
+    }
+
+    /**
+     * Retrieves a single dog information for view
+     *
+     * @param  string $dogId
+     * @return Dogs
+     */
+    public function getSingleDog(string $dogId)
+    {
+        $dogListing = Dogs::findById($dogId);
+        return $dogListing;
     }
 
     /**
