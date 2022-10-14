@@ -43,10 +43,13 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
 
                 $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid() . "." . $file->getClientOriginalExtension();
 
-                $file = $this->compress($file);
-                $file = $this->addWatermark($file);
-
-                $file->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
+                $image = Image::make($file);
+                unset($file);
+                $watermarkFile = $this->addWatermark($image);
+                unset($image);
+                $finishedFile   =     $this->compress($watermarkFile);
+                unset($watermarkFile);
+                $finishedFile->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
                 $path = SELF::LISTING_IMAGES_PATH . $fileName;
                 DogListingImages::create([
                     'name' => $fileName,
@@ -69,7 +72,7 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
      */
     public function compress($file)
     {
-        return Image::make($file)
+        return $file
             ->resize(1240, 800);
     }
 
@@ -81,10 +84,7 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
      */
     public function addWatermark($file)
     {
-        $watermark = Image::make(public_path('/images/watermark/goodboi_watermark.png'));
-
-        $file->insert($watermark, 'bottom-right', 5, 5);
-
+        $file->insert(Image::make(public_path('/images/watermark/goodboi_watermark.png')), 'bottom-right', 1, 1);
         return $file;
     }
 }
