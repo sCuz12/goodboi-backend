@@ -92,6 +92,18 @@ class DogService
     }
 
     /**
+     * Retrieves a single dog information for view
+     *
+     * @param  string $dogId
+     * @return Dogs
+     */
+    public function getSingleDog(string $dogId)
+    {
+        $dogListing = Dogs::findById($dogId);
+        return $dogListing;
+    }
+
+    /**
      * checks if user has not already seen the listing incrase the counter 
      *
      * @param  Dogs $dog

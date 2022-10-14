@@ -27,7 +27,7 @@ class LostDogsController extends Controller
 
     public function getSingle(string $dogId)
     {
-        $lostDog = (new LostDogService())->getSingleDog($dogId);
+        $lostDog = (new DogService())->getSingleDog($dogId);
 
         if (!$lostDog) {
             return $this->errorResponse("Listing not found", 404);

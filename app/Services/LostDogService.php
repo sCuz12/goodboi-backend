@@ -72,14 +72,6 @@ class LostDogService
         (new ListingsImagesUploader($request->images, $dogListing->title, $dogListing->id))->uploadImage();
     }
 
-    public function getSingleDog(string $dogId)
-    {
-
-        $dogListing = LostDogs::findLostDogById($dogId);
-        return $dogListing;
-    }
-
-
     public function updateListing(Request $request, string $dogId)
     {
         $dogListing = Dogs::findOrFail($dogId);
