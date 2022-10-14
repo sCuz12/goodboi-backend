@@ -4,6 +4,7 @@ namespace App\Services\FileUploader;
 
 use App\Models\DogListingImages;
 use Exception;
+use Illuminate\Http\UploadedFile;
 use Intervention\Image\Facades\Image as Image;
 
 
@@ -14,7 +15,6 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
     private $files;
     private $title;
     private $dog_list_id; // The id of the listing dog
-
 
     public function __construct($files, $title, $dog_list_id)
     {
@@ -40,8 +40,12 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
         //Loop through the files
         foreach ($this->files as $file) {
             try {
+
                 $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid() . "." . $file->getClientOriginalExtension();
+
                 $file = $this->compress($file);
+                $file = $this->addWatermark($file);
+
                 $file->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
                 $path = SELF::LISTING_IMAGES_PATH . $fileName;
                 DogListingImages::create([
@@ -51,13 +55,36 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
                 ]);
             } catch (Exception $e) {
                 //TODO : Log 
+                dd($e);
                 continue;
             }
         }
     }
 
+    /**
+     * compress
+     *
+     * @param  UploadedFile $file
+     * @return UploadedFile
+     */
     public function compress($file)
     {
-        return Image::make($file)->resize(1240, 800);
+        return Image::make($file)
+            ->resize(1240, 800);
+    }
+
+    /**
+     * Adds watermark to the photo
+     *
+     * @param  UploadedFile $file
+     * @return UploadedFile
+     */
+    public function addWatermark($file)
+    {
+        $watermark = Image::make(public_path('/images/watermark/goodboi_watermark.png'));
+
+        $file->insert($watermark, 'bottom-right', 5, 5);
+
+        return $file;
     }
 }
