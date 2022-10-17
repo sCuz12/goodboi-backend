@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserType;
+use App\Exceptions\ErrorUserRegistrationException;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Resources\UserSingleResource;
 use App\Services\AuthService;
+use App\Traits\ApiResponser;
 use Auth;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    use ApiResponser;
     public function login(Request $request)
     {
         if (Auth::attempt($request->only('email', 'password'))) {
@@ -40,7 +44,15 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $user = (new AuthService())->registerUser($request);
+        try {
+            $user = (new AuthService())->registerUser($request);
+        } catch (ErrorUserRegistrationException $e) {
+            return $e->render();
+        } catch (Exception $e) {
+            return $this->errorResposnse("Error");
+        }
+
+
         return response($user, Response::HTTP_CREATED);
     }
 

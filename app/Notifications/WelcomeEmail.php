@@ -43,7 +43,7 @@ class WelcomeEmail extends Notification
         return (new MailMessage)
             ->line('Welcome to ' . env('APP_NAME'))
             ->line('You are one step away from become a hero !! ')
-            ->action("Lets explore our diamonds", url(env('CLIENT_URL')))
+            ->action('Login', url(env('CLIENT_URL') . "/login"))
             ->line('Thank you for using our platform!');
     }
 

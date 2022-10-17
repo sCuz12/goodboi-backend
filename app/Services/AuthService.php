@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\UserType;
+use App\Exceptions\ErrorUserRegistrationException;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Shelter;
 use App\Models\User;
@@ -51,8 +52,8 @@ class AuthService
             } else {
                 $user->notify(new WelcomeEmail());
             }
-        } catch (Exception $e) {
-            //TODO : Do something
+        } catch (\Throwable $e) {
+            throw new ErrorUserRegistrationException;
         }
 
 
