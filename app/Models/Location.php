@@ -33,6 +33,7 @@ class Location extends Model
     public static function getLocationsByCity(string $cityId)
     {
         $locations = Location::where('city_id', $cityId)
+            ->orderBy('name')
             ->get();
         return $locations;
     }
