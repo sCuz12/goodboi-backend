@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\DogListingStatusesEnum as ListingStatuses;
 use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -175,11 +176,8 @@ class Dogs extends Model
      */
     public static function getListingsByParams($params): LengthAwarePaginator
     {
-
-        $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
-
         //only dogs for adoptions
-        $query->where('listing_type', ListingTypesEnum::ADOPT);
+        $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
 
         if (isset($params['size'])) {
             $query->where('size', $params['size']);
@@ -212,6 +210,13 @@ class Dogs extends Model
 
         if (isset($params['gender'])) {
             $query->where('gender', $params['gender']);
+        }
+
+        if (isset($params['minAge'])) {
+            $from   = Carbon::now()->subYears($params['maxAge'])->format('Y-m-d');
+            $to     = Carbon::now()->subYears($params['minAge'])->format('Y-m-d');
+
+            $query->whereBetween('dob', [$from, $to]);
         }
 
         return $query->paginate(10);

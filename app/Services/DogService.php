@@ -35,6 +35,7 @@ class DogService
             && $request->city === null
             && $request->sort === null
             && $request->gender === null
+            && $request->maxAge === null
         ) {
 
             //means no params added
@@ -69,6 +70,12 @@ class DogService
         if ($request->gender) {
             $params['gender'] = $request->gender;
         }
+
+        if ($request->maxAge) {
+            $params['minAge'] = $request->minAge ?? 0;
+            $params['maxAge'] = $request->maxAge ?? 10;
+        }
+
 
         $dogs = Dogs::getListingsByParams($params);
 
