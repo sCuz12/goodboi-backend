@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Dogs extends Model
@@ -172,9 +173,9 @@ class Dogs extends Model
      * Get listings fors adoptions based on the setted params
      *
      * @param  array $params
-     * @return LengthAwarePaginator
+     * @return Collection
      */
-    public static function getListingsByParams($params): LengthAwarePaginator
+    public static function getListingsByParams($params): Collection
     {
         //only dogs for adoptions
         $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
@@ -188,6 +189,7 @@ class Dogs extends Model
         }
 
         if (isset($params['city'])) {
+
             $query->whereIn('city_id', $params['city']);
         }
 
@@ -219,7 +221,7 @@ class Dogs extends Model
             $query->whereBetween('dob', [$from, $to]);
         }
 
-        return $query->paginate(10);
+        return $query->get();
     }
 
     /**

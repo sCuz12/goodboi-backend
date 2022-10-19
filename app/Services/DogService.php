@@ -59,6 +59,8 @@ class DogService
         }
 
         if ($request->city != null) {
+
+            $request->city = explode(',', $request->city);
             $params['city'] = $request->city;
         }
 
@@ -67,7 +69,7 @@ class DogService
             $params['sortValue'] = $request->sortValue;
         }
 
-        if ($request->gender) {
+        if ($request->gender && $request->gender != "b") {
             $params['gender'] = $request->gender;
         }
 
