@@ -40,17 +40,14 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
         //Loop through the files
         foreach ($this->files as $file) {
             try {
-
                 $fileName = date('d-m-Y-H-i') . "_img_" .  uniqid() . "." . $file->getClientOriginalExtension();
-
-                $image = Image::make($file);
+                $image    = Image::make($file);
                 unset($file);
-                $watermarkFile = $this->addWatermark($image);
-                unset($image);
-                $finishedFile   =     $this->compress($watermarkFile);
-                unset($watermarkFile);
+                //$rezisedFile  =     $this->compress($image);
+                $finishedFile = $this->addWatermark($image);
                 $finishedFile->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
                 $path = SELF::LISTING_IMAGES_PATH . $fileName;
+
                 DogListingImages::create([
                     'name' => $fileName,
                     'url'  => $path,
@@ -58,7 +55,6 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
                 ]);
             } catch (Exception $e) {
                 //TODO : Log 
-                dd($e);
                 continue;
             }
         }
@@ -73,7 +69,7 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
     public function compress($file)
     {
         return $file
-            ->resize(1240, 800);
+            ->crop(1152, 2048);
     }
 
     /**
@@ -84,7 +80,7 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
      */
     public function addWatermark($file)
     {
-        $file->insert(Image::make(public_path('/images/watermark/goodboi_watermark.png')), 'bottom-right', 1, 1);
+        $file->insert(public_path('/images/watermark/goodboi_watermark.png'), 'bottom-right', 1, 1);
         return $file;
     }
 }
