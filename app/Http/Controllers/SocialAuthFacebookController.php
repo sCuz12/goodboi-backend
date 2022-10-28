@@ -7,6 +7,7 @@ use App\Http\Interface\SocialAuthInterface;
 use App\Http\Interfaces\SocialAuthInterface as InterfacesSocialAuthInterface;
 use App\Http\Resources\UserSingleResource;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\Console\Input\Input;
@@ -54,6 +55,9 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
                 'user_type'         => "user",
             ]
         );
+
+        //create row in user_profile
+        UserProfile::create(['user_id' => $userCreated->id]);
 
         $userCreated->providers()->updateOrCreate(
             [
