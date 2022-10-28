@@ -57,7 +57,7 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
         );
 
         //create row in user_profile
-        UserProfile::create(['user_id' => $userCreated->id]);
+        UserProfile::firstOrCreate(['user_id' => $userCreated->id]);
 
         $userCreated->providers()->updateOrCreate(
             [
