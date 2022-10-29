@@ -11,6 +11,8 @@ use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\NotListingOwnerException;
 use App\Models\Dogs;
 use App\Models\FoundDogs;
+use App\Models\User;
+use App\Notifications\NotifyFoundDogLostDogOwners;
 use App\Services\FileUploader\CoverImageUploader;
 use App\Services\FileUploader\ListingsImagesUploader;
 use Auth;
@@ -18,6 +20,7 @@ use Exception;
 use File;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Notification;
 use Str;
 
 class FoundDogService
@@ -57,6 +60,10 @@ class FoundDogService
 
             //Handle Images upload
             (new ListingsImagesUploader($request->images, $dogListing->title, $dogListing->id))->uploadImage();
+
+            //SEND email to the users who lost their dogs
+            $usersWhoHasLostDogs = User::getUsersWhoLostTheirDog($request->city_id);
+            Notification::send($usersWhoHasLostDogs, new NotifyFoundDogLostDogOwners($dogListing));
 
             return  $dogListing;
         } catch (Exception $e) {

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\DogListingStatusesEnum;
+use App\Enums\ListingTypesEnum;
 use App\Enums\UserType;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +13,7 @@ use Laravel\Passport\HasApiTokens;
 use App\Models\OauthAccessToken;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\User
@@ -161,5 +164,21 @@ class User extends Authenticatable
     public function combineName(): string
     {
         return $this->first_name . "." . substr($this->last_name, 0, 1);
+    }
+
+    /**
+     * Get all the users who have active lost dogs in given location
+     *
+     * @return Collection
+     */
+    public static function getUsersWhoLostTheirDog(int $city_id): Collection
+    {
+        $result = User::whereHas('dogs', function ($query) use ($city_id) {
+            $query->where('listing_type', ListingTypesEnum::LOST)
+                ->where('status_id', DogListingStatusesEnum::ACTIVE)
+                ->where('city_id', $city_id);
+        })->get();
+
+        return $result;
     }
 }
