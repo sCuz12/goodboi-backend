@@ -50,13 +50,13 @@ class DogsController extends Controller
      * @param  int $id
      * @return JSON
      */
-    public function shelterListings($id)
+    public function shelterListings($id, Request $request)
     {
         $shelter = Shelter::find($id);
         if (!$shelter) {
             return response('Shelter not found', Response::HTTP_NOT_FOUND);
         }
-        $listings = (new DogService())->getAllListingsOfShelter($shelter->id);
+        $listings = (new DogService())->getAllListingsOfShelter($shelter->id, $request);
         return DogResource::collection($listings);
     }
 }
