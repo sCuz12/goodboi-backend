@@ -41,23 +41,24 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
             return response()->json(['error' => 'Invalid credentials provided.'], 422);
         }
 
-        $fullname = $this->split_fullname($user->getName());
+        $fullname    = $this->split_fullname($user->getName());
+        $userFetched = User::where('email', '=',  $user->getEmail())->first();
 
-        $userCreated = User::firstOrCreate(
-            [
-                'email' => $user->getEmail()
-            ],
-            [
+        if (null === $userFetched) {
+            $userCreated = User::create([
                 'email_verified_at' => now(),
                 'first_name'        => $fullname[0],
                 'last_name'         => $fullname[1],
                 'cover_photo'       => $user->getAvatar(),
                 'user_type'         => "user",
-            ]
-        );
-
-        //create row in user_profile
-        UserProfile::firstOrCreate(['user_id' => $userCreated->id]);
+            ]);
+            //create row in user_profile
+            UserProfile::firstOrCreate(['user_id' => $user->id]);
+            $isUserCreated = true;
+        } else {
+            $isUserCreated = false;
+            $userCreated = $userFetched;
+        }
 
         $userCreated->providers()->updateOrCreate(
             [
@@ -69,7 +70,7 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
         $token = $userCreated->createToken(UserType::USER, [UserType::USER])->accessToken;
 
         return [
-            'user'  => new UserSingleResource($userCreated, true),
+            'user'  => new UserSingleResource($userCreated, $isUserCreated),
             'token' => $token
         ];
     }
