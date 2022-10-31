@@ -44,7 +44,7 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
         $fullname    = $this->split_fullname($user->getName());
         $userFetched = User::where('email', '=',  $user->getEmail())->first();
 
-        if (null === $userFetched) {
+        if (null == $userFetched) {
             $userCreated = User::create([
                 'email_verified_at' => now(),
                 'first_name'        => $fullname[0],
