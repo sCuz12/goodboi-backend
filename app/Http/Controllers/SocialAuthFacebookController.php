@@ -8,7 +8,9 @@ use App\Http\Interfaces\SocialAuthInterface as InterfacesSocialAuthInterface;
 use App\Http\Resources\UserSingleResource;
 use App\Models\User;
 use App\Models\UserProfile;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\Console\Input\Input;
 
@@ -41,38 +43,43 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
             return response()->json(['error' => 'Invalid credentials provided.'], 422);
         }
 
-        $fullname    = $this->split_fullname($user->getName());
-        $userFetched = User::where('email', '=',  $user->getEmail())->first();
+        try {
+            $fullname    = $this->split_fullname($user->getName());
+            $userFetched = User::where('email', '=',  $user->getEmail())->first();
 
-        if (null == $userFetched) {
-            $userCreated = User::create([
-                'email_verified_at' => now(),
-                'first_name'        => $fullname[0],
-                'last_name'         => $fullname[1],
-                'cover_photo'       => $user->getAvatar() ?? "",
-                'user_type'         => UserType::USER,
-            ]);
-            //create row in user_profile
-            UserProfile::firstOrCreate(['user_id' => $userCreated->id]);
-            $isUserCreated = true;
-        } else {
-            $isUserCreated = false;
-            $userCreated = $userFetched;
+            if (null == $userFetched) {
+                $userCreated = User::create([
+                    'email_verified_at' => now(),
+                    'first_name'        => $fullname[0],
+                    'last_name'         => $fullname[1],
+                    'cover_photo'       => $user->getAvatar() ?? "",
+                    'user_type'         => UserType::USER,
+                ]);
+                //create row in user_profile
+                UserProfile::firstOrCreate(['user_id' => $userCreated->id]);
+                $isUserCreated = true;
+            } else {
+                $isUserCreated = false;
+                $userCreated = $userFetched;
+            }
+
+            $userCreated->providers()->updateOrCreate(
+                [
+                    'provider' => SELF::PROVIDER_NAME,
+                    'provider_id' => $user->getId(),
+                ],
+            );
+
+            $token = $userCreated->createToken(UserType::USER, [UserType::USER])->accessToken;
+
+            return [
+                'user'  => new UserSingleResource($userCreated, $isUserCreated),
+                'token' => $token
+            ];
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 422);
         }
-
-        $userCreated->providers()->updateOrCreate(
-            [
-                'provider' => SELF::PROVIDER_NAME,
-                'provider_id' => $user->getId(),
-            ],
-        );
-
-        $token = $userCreated->createToken(UserType::USER, [UserType::USER])->accessToken;
-
-        return [
-            'user'  => new UserSingleResource($userCreated, $isUserCreated),
-            'token' => $token
-        ];
     }
 
     private function split_fullname($fullname)
