@@ -54,6 +54,7 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
                     'last_name'         => $fullname[1],
                     'cover_photo'       => $user->getAvatar() ?? "",
                     'user_type'         => UserType::USER,
+                    'email'             => $user->getEmail(),
                 ]);
                 //create row in user_profile
                 UserProfile::firstOrCreate(['user_id' => $userCreated->id]);
