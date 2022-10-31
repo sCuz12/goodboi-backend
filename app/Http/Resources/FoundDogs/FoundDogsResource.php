@@ -41,7 +41,7 @@ class FoundDogsResource extends JsonResource
             'found_date'     => $this->foundDog->found_date ?? "",
             "found_city"     => $this->foundDog->location->city->name ?? "",
             'found_at'       => $this->foundDog->location->name ?? "",
-            "founder"        => $this->user->combineName(),
+            "founder"        => $this->user ? $this->user->combineName()  : "",
         ];
 
         return $data;
