@@ -22,6 +22,7 @@ class FoundDogsService
     {
         $activeFoundDogs = Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
             ->where('listing_type', ListingTypesEnum::FOUND)
+            ->orderBy('created_at', 'desc')
             ->paginate(12);
 
         return $activeFoundDogs;

@@ -165,7 +165,9 @@ class Dogs extends Model
 
         $activeDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
             ->where('listing_type', ListingTypesEnum::ADOPT)
+            ->orderBy('created_at', 'desc')
             ->paginate(12);
+
         return $activeDogs;
     }
 

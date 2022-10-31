@@ -34,6 +34,7 @@ class LostDogs extends Model
         $lostDogs = Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
             ->where('listing_type', ListingTypesEnum::LOST)
             ->join('lost_dogs', 'dogs.id', '=', 'lost_dogs.dog_id')
+            ->orderBy('dogs.created_at', 'desc')
             ->paginate(12);
 
         return $lostDogs;
