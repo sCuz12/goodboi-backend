@@ -42,7 +42,7 @@ class LostDogResource extends JsonResource
             "lost_city"      => $location->city->name ?? "",
             'lost_at'        => $location->name ?? "",
             "reward"         => $this->reward ?? 0,
-            "owner"          => $this->user->combineName(),
+            "owner"          => $this->user->combineName() ?? "",
         ];
 
         return $data;

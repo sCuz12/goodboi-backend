@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\OauthAccessToken;
 use App\Notifications\ResetPasswordNotification;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -163,7 +164,11 @@ class User extends Authenticatable
      */
     public function combineName(): string
     {
-        return $this->first_name . "." . substr($this->last_name, 0, 1);
+        try {
+            return $this->first_name . "." . substr($this->last_name, 0, 1);
+        } catch (Exception $e) {
+            return $this->first_name;
+        }
     }
 
     /**
