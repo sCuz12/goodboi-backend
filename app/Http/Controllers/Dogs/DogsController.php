@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dogs;
 
 use App\Http\Resources\DogResource;
 use App\Http\Resources\DogSingleResource;
 use Illuminate\Http\Request;
-use App\Models\Dogs;
 use App\Models\Shelter;
 use App\Services\DogService;
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 
 class DogsController extends Controller
 {

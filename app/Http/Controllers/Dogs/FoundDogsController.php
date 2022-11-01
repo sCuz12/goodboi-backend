@@ -7,9 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FoundDogs\FoundDogsResource;
 use App\Http\Resources\FoundDogs\SingleFoundDogResource;
 use App\Services\Dogs\FoundDogsService;
+use App\Traits\ApiResponser;
+use Exception;
+use Illuminate\Http\Response;
 
 class FoundDogsController extends Controller
 {
+    use ApiResponser;
+
     protected $foundDogsService;
 
     public function __construct()
@@ -29,6 +34,8 @@ class FoundDogsController extends Controller
             $foundDog = $this->foundDogsService->getActiveDogById($id);
         } catch (IdNotProvidedException $e) {
             return $e->render();
+        } catch (Exception $e) {
+            $this->errorResponse($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 

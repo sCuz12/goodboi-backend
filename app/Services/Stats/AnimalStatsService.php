@@ -4,7 +4,10 @@ namespace App\Services\Stats;
 
 use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
+use App\Exceptions\UnableToRetrieveGeneralStats;
 use App\Models\Dogs;
+use Error;
+use Exception;
 
 class AnimalStatsService
 {
@@ -36,7 +39,6 @@ class AnimalStatsService
             'name' => "Found Dogs",
             'count' => $totalFoundedAnimals,
         ];
-
         return $data;
     }
 }

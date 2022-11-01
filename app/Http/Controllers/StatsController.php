@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 class StatsController extends Controller
 {
     use ApiResponser;
+
     public function index()
     {
         return $this->successResponse((new AnimalStatsService())->getGeneralStats(), Response::HTTP_OK);

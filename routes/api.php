@@ -5,8 +5,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\Dogs\FoundDogsController;
-use App\Http\Controllers\DogsController;
-use App\Http\Controllers\EmailVerification;
+use App\Http\Controllers\Dogs\DogsController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -22,7 +21,6 @@ use App\Http\Controllers\User\UserListingsController;
 use App\Http\Controllers\User\UserLostDogController;
 use App\Http\Controllers\UserFoundDogController;
 use App\Http\Controllers\VaccinesController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
