@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Exceptions\CreateFoundDogListingException;
-use App\Exceptions\IncorrectListingTypeException;
 use App\Exceptions\ListingNotFoundException;
 use App\Exceptions\NotListingOwnerException;
 use App\Http\Resources\FoundDogs\EditFoundDogResource;
 use App\Services\Dogs\FoundDogsService;
-use App\Services\DogService;
 use App\Services\Shelters\ActionDogService;
 use App\Services\User\FoundDogService;
 use App\Traits\ApiResponser;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 
 class UserFoundDogController extends Controller
 {

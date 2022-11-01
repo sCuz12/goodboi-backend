@@ -19,7 +19,7 @@ use App\Http\Controllers\StatsController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserListingsController;
 use App\Http\Controllers\User\UserLostDogController;
-use App\Http\Controllers\UserFoundDogController;
+use App\Http\Controllers\User\UserFoundDogController;
 use App\Http\Controllers\VaccinesController;
 use Illuminate\Support\Facades\Route;
 
