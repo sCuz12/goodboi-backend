@@ -15,12 +15,14 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
     private $files;
     private $title;
     private $dog_list_id; // The id of the listing dog
+    private $watermark;
 
     public function __construct($files, $title, $dog_list_id)
     {
-        $this->files = $files;
-        $this->title = $title;
-        $this->dog_list_id = $dog_list_id;
+        $this->files        = $files;
+        $this->title        = $title;
+        $this->dog_list_id  = $dog_list_id;
+        $this->watermark    = Image::make(public_path('/images/watermark/goodboi_watermark.png'));
         return $this;
     }
 
@@ -80,7 +82,15 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
      */
     public function addWatermark($file)
     {
-        $file->insert(public_path('/images/watermark/goodboi_watermark.png'), 'bottom-right', 1, 1);
+        $resizePercentage = 75; //70% less then an actual image (play with this value)
+        $watermarkSize    = round($file->width() * ((100 - $resizePercentage) / 100), 2); //watermark will be $resizePercentage less then the actual width of the image
+
+        // resize watermark width keep height auto
+        $this->watermark->resize($watermarkSize, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
+        $file->insert($this->watermark, 'bottom-right', 2, 2);
         return $file;
     }
 }
