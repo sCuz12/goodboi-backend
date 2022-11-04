@@ -16,7 +16,7 @@ services:
     working_dir: /var/www/
     volumes:
       - ./:/var/www
-      - ./php.ini:/usr/local/etc/php/php.inidock
+      - ./php.ini:/usr/local/etc/php/conf.d/php.inidock
     networks:
       - app 
 
