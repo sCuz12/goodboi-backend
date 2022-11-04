@@ -93,10 +93,11 @@ class DogService
     public function getAllListingsOfShelter($shelter_id, Request $request)
     {
         if ($request->status) {
-            return Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'status' => $request->status]);
+            return Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'status' => $request->status, 'orderBy' => 1]);
         }
 
-        $results = Dogs::getListingsByParams(['shelter_id' => $shelter_id]);
+        $results = Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'orderBy' => 1]);
+
         return $results;
     }
 

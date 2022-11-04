@@ -223,6 +223,10 @@ class Dogs extends Model
             $query->whereBetween('dob', [$from, $to]);
         }
 
+        if (isset($params['orderBy'])) {
+            $query->orderBy('created_at', 'DESC');
+        }
+
         return $query->get();
     }
 
