@@ -47,7 +47,16 @@ class ListingsImagesUploader implements ImagePhotoUploaderInterface
                 unset($file);
                 //$rezisedFile  =     $this->compress($image);
                 $finishedFile = $this->addWatermark($image);
-                $finishedFile->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
+                $height = $finishedFile->height() / 4;            //get 1/4th of image height
+
+                $width = $finishedFile->width() / 4;
+                if ($finishedFile->fileSize() > 1000000) {
+                    $finishedFile->resize($width, $height)->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
+                } else {
+                    $finishedFile->save(public_path() . SELF::LISTING_IMAGES_PATH . "/" . $fileName);
+                }
+
+
                 $path = SELF::LISTING_IMAGES_PATH . $fileName;
 
                 DogListingImages::create([
