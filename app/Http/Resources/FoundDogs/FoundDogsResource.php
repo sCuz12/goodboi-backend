@@ -28,7 +28,7 @@ class FoundDogsResource extends JsonResource
         $location = Location::find($this->location_id);
 
         $data = [
-            'dog_id'         => $this->id,
+            'id'             => $this->id,
             'title'          => $this->title,
             'name'           => $this->name,
             'description'    => $this->description,
