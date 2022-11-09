@@ -103,10 +103,27 @@ final class LocationsEnum extends Enum
         [
             "name" => "Astromeritis",
             "city_id" => 1,
+
+        ],
+        [
+            "name" => "Politiko",
+            "city_id" => 1,
+        ],
+        [
+            "name" => "Palaixori",
+            "city_id" => 1,
+        ],
+        [
+            "name" => "Klirou",
+            "city_id" => 1,
+        ],
+        [
+            "name" => "Arediou",
+            "city_id" => 1,
         ],
 
 
-        //Limassol 
+        /**** Limassol ****/
         [
             "name" => "Ayios Antonios",
             "city_id" => 2,
@@ -195,8 +212,12 @@ final class LocationsEnum extends Enum
             "name" => "Molos (City Center)",
             "city_id" => 2,
         ],
+        [
+            "name" => "Trodos",
+            "city_id" => 2
+        ],
 
-        //Paphos 
+        /***** Paphos *****/
         [
             "name" => "Ayios Theodoros ",
             "city_id" => 3
@@ -258,7 +279,6 @@ final class LocationsEnum extends Enum
             "name" => "Polemi",
             "city_id" => 3
         ],
-
 
 
         //TODO: add more cities for Paphos
