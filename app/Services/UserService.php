@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ListingTypesEnum;
 use App\Enums\UserType;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserCreateRequest;
@@ -72,12 +73,20 @@ class UserService
         return $user;
     }
 
+    /**
+     * Returns the stats of the user 
+     * (favourites ,Active lost listings count ,Active found listngs count)
+     *
+     * @param  User $user
+     * @return array
+     */
     public function getUserStats(User $user): array
     {
         $data = [];
 
         $userFavouritedCount = Favourites::favouritesCountByUser($user);
-        $activeLostDogCount  = Dogs::activeLostDogCountByUser($user);
+        $activeLostDogCount  = Dogs::ListeDdogsCountByUser($user, ListingTypesEnum::LOST);
+        $activeFoundDogCount = Dogs::ListeDdogsCountByUser($user, ListingTypesEnum::FOUND);
 
         $data[] = [
             'name' => "My Favourites",
@@ -88,6 +97,11 @@ class UserService
         $data[] = [
             'name' => "Active Lost Dogs",
             'count' => $activeLostDogCount,
+            'url' => "/user/mylistings"
+        ];
+        $data[] = [
+            'name' => "Active Found Dogs",
+            'count' => $activeFoundDogCount,
             'url' => "/user/mylistings"
         ];
 

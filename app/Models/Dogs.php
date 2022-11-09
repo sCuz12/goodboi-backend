@@ -331,13 +331,14 @@ class Dogs extends Model
 
 
     /**
-     * Retrieves the number of active lost by user
-
+     * Retrieves the number of listed dogs of User 
+     * based on the listing type passed 
+     *
      */
-    public static function activeLostDogCountByUser(User $user): int
+    public static function ListeDdogsCountByUser(User $user, string $listing_type = ListingTypesEnum::LOST): int
     {
         $activeDogsCount = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::LOST)
+            ->where('listing_type', $listing_type)
             ->where('user_id', $user->id)
             ->get()
             ->count();
