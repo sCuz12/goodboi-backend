@@ -72,7 +72,8 @@ class Dogs extends Model
 
     public function shelter(): BelongsTo
     {
-        return $this->belongsTo(Shelter::class);
+
+        return $this->belongsTo(Shelter::class, 'shelter_id');
     }
 
     /**

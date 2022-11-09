@@ -32,6 +32,7 @@ class DogResource extends JsonResource
             'total_views'  => $this->total_views,
             'gender'       => $this->gender,
             'listing_type' => $this->listing_type,
+            'shelter'      => $this->shelter->shelter_name,
         ];
 
         if (auth('api')->user()) {
