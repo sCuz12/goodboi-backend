@@ -32,7 +32,8 @@ class Shelter extends Model
         'facebook_pagename'
     ];
 
-    const COVER_IMAGES_PATH = "images/cover_images/profiles/";
+    const COVER_IMAGES_PATH   = "images/cover_images/profiles/";
+    const DEFAULT_COVER_PHOTO = "shelter_default.png";
 
     public function user()
     {
@@ -60,7 +61,8 @@ class Shelter extends Model
     */
     public function getCoverImagePath()
     {
-        return asset(self::COVER_IMAGES_PATH . $this->user->cover_photo);
+        $cover_photo = $this->user->cover_photo ?? self::DEFAULT_COVER_PHOTO;
+        return asset(self::COVER_IMAGES_PATH . $cover_photo);
     }
 
     public static function getVerifiedShelters()
