@@ -21,8 +21,8 @@ class ShelterResource extends JsonResource
             'address'       => $this->address,
             'description'   => $this->description,
             'cover_image'   => $this->getCoverImagePath(),
-            'city'          => $this->city->name,
-            'email'         => $this->user->email,
+            'city'          => $this->city->name ?? "",
+            'email'         => $this->user->email ?? "",
             'phone'         => $this->phone,
         ];
     }
