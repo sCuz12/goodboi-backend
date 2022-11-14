@@ -33,7 +33,7 @@ class DogService
             $request->size == null
             && $request->shelter_id == null
             && $request->city === null
-            && $request->sort === null
+            && $request->sortField === null
             && $request->gender === null
             && $request->maxAge === null
         ) {
@@ -51,6 +51,7 @@ class DogService
         }
 
         $params = [];
+
         if ($request->size != null) {
             $params['size'] = $request->size;
         }
@@ -64,8 +65,8 @@ class DogService
             $params['city'] = $request->city;
         }
 
-        if ($request->sort) {
-            $params['sortField'] = $request->sort;
+        if ($request->sortField) {
+            $params['sortField'] = $request->sortField;
             $params['sortValue'] = $request->sortValue;
         }
 
