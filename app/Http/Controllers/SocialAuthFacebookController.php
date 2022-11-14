@@ -8,11 +8,11 @@ use App\Http\Interfaces\SocialAuthInterface as InterfacesSocialAuthInterface;
 use App\Http\Resources\UserSingleResource;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Notifications\WelcomeEmail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-use Symfony\Component\Console\Input\Input;
 
 class SocialAuthFacebookController extends Controller implements InterfacesSocialAuthInterface
 {
@@ -58,6 +58,9 @@ class SocialAuthFacebookController extends Controller implements InterfacesSocia
                 ]);
                 //create row in user_profile
                 UserProfile::firstOrCreate(['user_id' => $userCreated->id]);
+                //send Register Email 
+                $userCreated->notify(new WelcomeEmail());
+
                 $isUserCreated = true;
             } else {
                 $isUserCreated = false;
