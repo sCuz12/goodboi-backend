@@ -178,7 +178,7 @@ class Dogs extends Model
      * @param  array $params
      * @return Collection
      */
-    public static function getListingsByParams($params): Collection
+    public static function getListingsByParams($params): LengthAwarePaginator
     {
         //only dogs for adoptions
         $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
@@ -228,7 +228,7 @@ class Dogs extends Model
             $query->orderBy('created_at', 'DESC');
         }
 
-        return $query->get();
+        return $query->paginate(12);
     }
 
     /**
