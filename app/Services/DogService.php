@@ -2,24 +2,26 @@
 
 namespace App\Services;
 
-use App\Enums\CoverImagesPathEnum;
 use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
 use App\Models\DogsViewsLog;
-use App\Models\LostDogs;
 use App\Models\User;
+use App\Repositories\Interfaces\DogListingRepositoryInterface;
 use App\Traits\ApiResponser;
-use Exception;
-use File;
+
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DogService
 {
     use AuthorizesRequests, ApiResponser;
 
+    private  $adoptionDogRepository;
+
+    public function __construct(DogListingRepositoryInterface $dogRepository)
+    {
+        $this->adoptionDogRepository = $dogRepository;
+    }
     /**
      * Get listings based on the request (if no filters return all active dogs otherwise filter)
      *
@@ -41,10 +43,10 @@ class DogService
             //means no params added
             switch ($type) {
                 case ListingTypesEnum::ADOPT:
-                    return Dogs::getAllActiveAdoptionDogs();
+                    return $this->adoptionDogRepository->getAllDogs(ListingTypesEnum::ADOPT);
                     break;
                 case ListingTypesEnum::LOST:
-                    return LostDogs::allActiveDogs();
+                    return $this->adoptionDogRepository->getAllDogs(ListingTypesEnum::LOST);
                     break;
                 default;
             }
@@ -79,8 +81,7 @@ class DogService
             $params['maxAge'] = $request->maxAge ?? 10;
         }
 
-
-        $dogs = Dogs::getListingsByParams($params);
+        $dogs = $this->adoptionDogRepository->getDogsByParams($params, ListingTypesEnum::ADOPT);
 
         return $dogs;
     }
@@ -110,7 +111,7 @@ class DogService
      */
     public function getSingleDog(string $dogId)
     {
-        $dogListing = Dogs::findById($dogId);
+        $dogListing = $this->adoptionDogRepository->getDogById($dogId);
         return $dogListing;
     }
 
@@ -134,7 +135,7 @@ class DogService
 
     public function getAllListingsOfUser(User $user)
     {
-        $activeLostDogs = Dogs::getActiveListingsByUser($user);
+        $activeLostDogs = $this->adoptionDogRepository->getLostOrActiveDogsByUser($user);
         return $activeLostDogs;
     }
 }

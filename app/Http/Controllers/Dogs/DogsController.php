@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Dogs;
 use App\Http\Resources\DogResource;
 use App\Http\Resources\DogSingleResource;
 use Illuminate\Http\Request;
-use App\Models\Shelter;
 use App\Services\DogService;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\DogListingRepositoryInterface;
 
 class DogsController extends Controller
 {
+    private DogService $dogService;
+
+    public function __construct(DogListingRepositoryInterface $dogRepository)
+    {
+        $this->dogService = new DogService($dogRepository);
+    }
     /**
      * Check the request if has (size or shelter filters) otherwise fetch all active
      *
@@ -19,8 +24,8 @@ class DogsController extends Controller
      */
     public function index(Request $request)
     {
-        $dogService  = new DogService();
-        $dogsResults = $dogService->filterDogsByRequest($request);
+
+        $dogsResults = $this->dogService->filterDogsByRequest($request);
 
         return DogResource::collection($dogsResults);
     }
@@ -33,13 +38,13 @@ class DogsController extends Controller
      */
     public function showById($id)
     {
-        $dog = (new DogService())->getSingleDog($id);
+        $dog = $this->dogService->getSingleDog($id);
         //Handle not found
         if (!$dog) {
             return response("Listing not found", 404);
         }
         //updates count of the view 
-        (new DogService())->updateCountView($dog, request()->header('Client_Ip'));
+        //(new DogService())->updateCountView($dog, request()->header('Client_Ip'));
 
         return new DogSingleResource($dog);
     }
@@ -50,13 +55,13 @@ class DogsController extends Controller
      * @param  int $id
      * @return JSON
      */
-    public function shelterListings($id, Request $request)
-    {
-        $shelter = Shelter::find($id);
-        if (!$shelter) {
-            return response('Shelter not found', Response::HTTP_NOT_FOUND);
-        }
-        $listings = (new DogService())->getAllListingsOfShelter($shelter->id, $request);
-        return DogResource::collection($listings);
-    }
+    // public function shelterListings($id, Request $request)
+    // {
+    //     $shelter = Shelter::find($id);
+    //     if (!$shelter) {
+    //         return response('Shelter not found', Response::HTTP_NOT_FOUND);
+    //     }
+    //     //$listings = (new DogService())->getAllListingsOfShelter($shelter->id, $request);
+    //     //return DogResource::collection($listings);
+    // }
 }

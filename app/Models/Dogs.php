@@ -156,93 +156,6 @@ class Dogs extends Model
     }
 
     /**
-     * Get all active dog listings for ADOPTIONS
-     *
-     * @param  array $params
-     * @return LengthAwarePaginator
-     */
-    public static function getAllActiveAdoptionDogs(): LengthAwarePaginator
-    {
-
-        $activeDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::ADOPT)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
-
-        return $activeDogs;
-    }
-
-    /**
-     * Get listings fors adoptions based on the setted params
-     *
-     * @param  array $params
-     * @return Collection
-     */
-    public static function getListingsByParams($params): LengthAwarePaginator
-    {
-        //only dogs for adoptions
-        $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
-
-        if (isset($params['size'])) {
-            $query->where('size', $params['size']);
-        }
-
-        if (isset($params['shelter_id'])) {
-            $query->where('shelter_id', $params['shelter_id']);
-        }
-
-        if (isset($params['city'])) {
-
-            $query->whereIn('city_id', $params['city']);
-        }
-
-        if (isset($params['status'])) {
-            $query->where('status_id', $params['status']);
-        } else {
-            //default active
-            $query->where('status_id', ListingStatuses::ACTIVE);
-        }
-
-        if (isset($params['sortField'], $params['sortValue'])) {
-            // check if the sort field is allowed
-            if (in_array($params['sortField'], self::SORTABLE_FIELDS)) {
-                $query->orderBy(
-                    $params['sortField'],
-                    $params['sortValue']
-                );
-            }
-        }
-
-        if (isset($params['gender'])) {
-            $query->where('gender', $params['gender']);
-        }
-
-        if (isset($params['minAge'])) {
-            $from   = Carbon::now()->subYears($params['maxAge'])->format('Y-m-d');
-            $to     = Carbon::now()->subYears($params['minAge'])->format('Y-m-d');
-
-            $query->whereBetween('dob', [$from, $to]);
-        }
-
-        if (isset($params['orderBy'])) {
-            $query->orderBy('created_at', 'DESC');
-        }
-
-        return $query->paginate(12);
-    }
-
-    /**
-     * Search dog listing by id
-     *
-     * @param  int $id
-     * @return Dogs
-     */
-    public static function findById($id)
-    {
-        return Dogs::where('id', $id)->first();
-    }
-
-    /**
      * Get the count all active dog listings of specific shelter
      *
      * @param  int $shelter_id
@@ -343,17 +256,6 @@ class Dogs extends Model
             ->get()
             ->count();
         return $activeDogsCount;
-    }
-
-    public static function getActiveListingsByUser(User $user)
-    {
-        $activeLostDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::LOST)
-            ->orWhere('listing_type', ListingTypesEnum::FOUND)
-            ->where('user_id', $user->id)
-            ->get();
-
-        return $activeLostDogs;
     }
 
     /**

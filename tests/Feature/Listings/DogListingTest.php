@@ -55,7 +55,7 @@ class DogListingTest extends TestCase
                 [
                     'data' => [
                         '*' => [
-                            'dog_id',
+                            'id',
                             'title',
                             'name',
                             'description',
@@ -87,7 +87,7 @@ class DogListingTest extends TestCase
                 [
                     'data' => [
                         '*' => [
-                            'dog_id',
+                            'id',
                             'title',
                             'name',
                             'description',
