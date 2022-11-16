@@ -6,6 +6,7 @@ use App\Enums\DogListingStatusesEnum;
 use App\Models\Dogs;
 use App\Models\Shelter as Shelter;
 use App\Models\User;
+use App\Repositories\ShelterRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -13,18 +14,26 @@ class ShelterService
 {
     use AuthorizesRequests;
 
+    private $shelterRepository;
+
+    public function __construct()
+    {
+        $this->shelterRepository = (new ShelterRepository());
+    }
+
     public function getAllShelters(Request $request)
     {
 
         if ($request->city == null) {
-            return Shelter::getVerifiedShelters();
+            return $this->shelterRepository->getVerifiedShelters();
         }
 
         if ($request->city != null) {
             $params['city'] = $request->city;
         }
 
-        $shelters = Shelter::getSheltersByParams($params);
+        $shelters = $this->shelterRepository->getSheltersByParams($params);
+
         return $shelters;
     }
 

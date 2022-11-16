@@ -74,14 +74,11 @@ class ActionDogService
             $animalBook = AnimalHealthBook::create([
                 'dog_id' => $dogList->id,
             ]);
-            //TODO : Investigate if works well
 
             //Add the vaccinations into pivot table
             if ($request->vaccinations) {
                 $animalBook->vaccinations()->attach($request->vaccinations);
             }
-
-
             //Handle Images upload
             (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage();
         } catch (Exception $e) {
