@@ -6,7 +6,7 @@ use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
 use App\Models\DogsViewsLog;
 use App\Models\User;
-use App\Repositories\Interfaces\DogListingRepositoryInterface;
+use App\Repositories\DogRepository;
 use App\Traits\ApiResponser;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -18,9 +18,9 @@ class DogService
 
     private  $adoptionDogRepository;
 
-    public function __construct(DogListingRepositoryInterface $dogRepository)
+    public function __construct()
     {
-        $this->adoptionDogRepository = $dogRepository;
+        $this->adoptionDogRepository = (new DogRepository());
     }
     /**
      * Get listings based on the request (if no filters return all active dogs otherwise filter)

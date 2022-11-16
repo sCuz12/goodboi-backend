@@ -13,9 +13,9 @@ class DogsController extends Controller
 {
     private DogService $dogService;
 
-    public function __construct(DogListingRepositoryInterface $dogRepository)
+    public function __construct()
     {
-        $this->dogService = new DogService($dogRepository);
+        $this->dogService = new DogService();
     }
     /**
      * Check the request if has (size or shelter filters) otherwise fetch all active

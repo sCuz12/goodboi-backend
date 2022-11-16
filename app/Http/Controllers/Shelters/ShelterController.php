@@ -53,6 +53,7 @@ class ShelterController extends Controller
     public function shelterListings(Request $request)
     {
         $user = Auth::user();
+
         $listings = (new DogService())->getAllListingsOfShelter($user->shelter->id, $request);
         return DogResource::collection($listings);
     }
