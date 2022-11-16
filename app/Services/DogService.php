@@ -16,11 +16,11 @@ class DogService
 {
     use AuthorizesRequests, ApiResponser;
 
-    private  $adoptionDogRepository;
+    private  $dogRepository;
 
     public function __construct()
     {
-        $this->adoptionDogRepository = (new DogRepository());
+        $this->dogRepository = (new DogRepository());
     }
     /**
      * Get listings based on the request (if no filters return all active dogs otherwise filter)
@@ -43,10 +43,10 @@ class DogService
             //means no params added
             switch ($type) {
                 case ListingTypesEnum::ADOPT:
-                    return $this->adoptionDogRepository->getAllDogs(ListingTypesEnum::ADOPT);
+                    return $this->dogRepository->getAllDogs(ListingTypesEnum::ADOPT);
                     break;
                 case ListingTypesEnum::LOST:
-                    return $this->adoptionDogRepository->getAllDogs(ListingTypesEnum::LOST);
+                    return $this->dogRepository->getAllDogs(ListingTypesEnum::LOST);
                     break;
                 default;
             }
@@ -81,7 +81,7 @@ class DogService
             $params['maxAge'] = $request->maxAge ?? 10;
         }
 
-        $dogs = $this->adoptionDogRepository->getDogsByParams($params, ListingTypesEnum::ADOPT);
+        $dogs = $this->dogRepository->getDogsByParams($params, ListingTypesEnum::ADOPT);
 
         return $dogs;
     }
@@ -111,7 +111,7 @@ class DogService
      */
     public function getSingleDog(string $dogId)
     {
-        $dogListing = $this->adoptionDogRepository->getDogById($dogId);
+        $dogListing = $this->dogRepository->getDogById($dogId);
         return $dogListing;
     }
 
@@ -135,7 +135,7 @@ class DogService
 
     public function getAllListingsOfUser(User $user)
     {
-        $activeLostDogs = $this->adoptionDogRepository->getLostOrActiveDogsByUser($user);
+        $activeLostDogs = $this->dogRepository->getLostOrActiveDogsByUser($user);
         return $activeLostDogs;
     }
 }
