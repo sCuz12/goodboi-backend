@@ -7,6 +7,7 @@ use App\Models\Dogs;
 use App\Repositories\Interfaces\DogListingRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Enums\ListingTypesEnum;
+use App\Models\Shelter;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -105,5 +106,89 @@ class DogRepository implements DogListingRepositoryInterface
             ->get();
 
         return $activeLostDogs;
+    }
+
+    /**
+     * Get the count all active dog listings of specific shelter
+     *
+     * @param  int $shelter_id
+     * @param  bool $active
+     * @return int 
+     */
+    public function totalListingsByShelter(int $shelter_id, bool $active = false)
+    {
+        $query = Dogs::where('shelter_id', $shelter_id);
+        if ($active) {
+            $query->where('status_id', DogListingStatusesEnum::ACTIVE);
+        }
+
+        $listingsCount = $query->get()->count();
+
+        return (int) $listingsCount;
+    }
+
+    /**
+     * Gets the total number of listings favourites of a single shelter 
+     *
+     * @param  Shelter $shelter
+     * @return int
+     */
+    public function totalFavouritesByShelter(Shelter $shelter): int
+    {
+        $listings = $shelter->dogs()->get();
+        $total    = 0;
+
+        foreach ($listings as $listing) {
+            $total += $listing->getCountOfFavourites();
+        }
+
+        return $total;
+    }
+
+
+
+    /**
+     * Gets the total number of listings views of a single shelter 
+     *
+     * @param  Shelter $shelter
+     * @return int
+     */
+    public  function totalViewsByShelter(Shelter $shelter): int
+    {
+
+        $listings   = $shelter->dogs()->get();
+        $totalViews = $listings->map(function ($item, $key) use (&$total) {
+
+            $total = $item->total_views;
+            return $total;
+        });
+
+        return array_sum($totalViews->all());
+    }
+
+    public function totalAdoptedByShelter(Shelter $shelter)
+    {
+        $adoptedListingsCount = Dogs::where('status_id', DogListingStatusesEnum::ADOPTED)
+            ->where('listing_type', ListingTypesEnum::ADOPT)
+            ->where('shelter_id', $shelter->id)
+            ->get()
+            ->count();
+        return $adoptedListingsCount;
+    }
+
+    /**
+     * total count of adopted listings by shelter
+     *
+     * @param  Shelter $shelter
+     * @return void
+     */
+    public function totalAdoptedListingsByShelter(Shelter $shelter)
+    {
+        $adoptedListingsCount = Dogs::where('status_id', DogListingStatusesEnum::ADOPTED)
+            ->where('listing_type', ListingTypesEnum::ADOPT)
+            ->where('shelter_id', $shelter->id)
+            ->get()
+            ->count();
+        return $adoptedListingsCount;
     }
 }

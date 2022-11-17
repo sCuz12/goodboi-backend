@@ -6,6 +6,7 @@ use App\Enums\DogListingStatusesEnum;
 use App\Models\Dogs;
 use App\Models\Shelter as Shelter;
 use App\Models\User;
+use App\Repositories\DogRepository;
 use App\Repositories\ShelterRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -16,9 +17,15 @@ class ShelterService
 
     private $shelterRepository;
 
+    /**
+     * var 
+     */
+    protected $dogRepository;
+
     public function __construct()
     {
         $this->shelterRepository = (new ShelterRepository());
+        $this->dogRepository     = (new DogRepository());
     }
 
     public function getAllShelters(Request $request)
@@ -45,13 +52,15 @@ class ShelterService
      */
     public function getShelterStats(User $user)
     {
+        $shelterId = (int)$user->shelter->id;
+
         $data                   = [];
 
-        $dogActiveListingsCount = Dogs::getListingsCountByShelter($user->shelter->id, true);
-        $totalFavourites        = Dogs::totalFavouritesByShelter($user->shelter);
-        $dogListingCount        = Dogs::getListingsCountByShelter($user->shelter->id);
-        $totalViews             = Dogs::totalViewsByShelter($user->shelter);
-        $adoptedListings        = Dogs::adoptedListingsCountByUser($user->shelter);
+        $dogActiveListingsCount = $this->dogRepository->totalListingsByShelter($shelterId, true);
+        $totalFavourites        = $this->dogRepository->totalFavouritesByShelter($user->shelter);
+        $dogListingCount        = $this->dogRepository->totalListingsByShelter($shelterId);
+        $totalViews             = $this->dogRepository->totalViewsByShelter($user->shelter);
+        $adoptedListings        = $this->dogRepository->totalAdoptedByShelter($user->shelter);
 
         if (!$user->isShelter()) {
             return false;
