@@ -9,6 +9,7 @@ use App\Http\Requests\UserCreateRequest;
 use App\Models\Dogs;
 use App\Models\Favourites;
 use App\Models\User;
+use App\Repositories\DogRepository;
 use App\Services\FileUploader\CoverImageUploader;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -16,8 +17,11 @@ use Illuminate\Http\Request;
 class UserService
 {
 
+    protected DogRepository $dogRepository;
+
     public function __construct()
     {
+        $this->dogRepository = (new DogRepository());
     }
 
     public function createUser(UserCreateRequest $request)
@@ -85,8 +89,8 @@ class UserService
         $data = [];
 
         $userFavouritedCount = Favourites::favouritesCountByUser($user);
-        $activeLostDogCount  = Dogs::ListeDdogsCountByUser($user, ListingTypesEnum::LOST);
-        $activeFoundDogCount = Dogs::ListeDdogsCountByUser($user, ListingTypesEnum::FOUND);
+        $activeLostDogCount  = $this->dogRepository->totalDogsListedByUser($user, ListingTypesEnum::LOST);
+        $activeFoundDogCount = $this->dogRepository->totalDogsListedByUser($user, ListingTypesEnum::FOUND);
 
         $data[] = [
             'name' => "My Favourites",

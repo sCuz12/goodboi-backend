@@ -15,12 +15,8 @@ class ShelterService
 {
     use AuthorizesRequests;
 
-    private $shelterRepository;
-
-    /**
-     * var 
-     */
-    protected $dogRepository;
+    private ShelterRepository $shelterRepository;
+    protected DogRepository $dogRepository;
 
     public function __construct()
     {
@@ -97,8 +93,6 @@ class ShelterService
             'name' => "Total Views",
             'count' => $totalViews,
         ];
-
-
 
         return $data;
     }

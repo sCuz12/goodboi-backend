@@ -190,20 +190,6 @@ class Dogs extends Model
 
 
 
-    /**
-     * Retrieves the number of listed dogs of User 
-     * based on the listing type passed 
-     *
-     */
-    public static function ListeDdogsCountByUser(User $user, string $listing_type = ListingTypesEnum::LOST): int
-    {
-        $activeDogsCount = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', $listing_type)
-            ->where('user_id', $user->id)
-            ->get()
-            ->count();
-        return $activeDogsCount;
-    }
 
     /**
      * Returns the active dog with type lost by id
