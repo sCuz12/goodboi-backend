@@ -97,11 +97,9 @@ class DogRepository implements DogListingRepositoryInterface
         return Dogs::where('id', $id)->first();
     }
 
-    public function getLostOrActiveDogsByUser(User $user, string $type = ListingTypesEnum::ADOPT)
+    public function activeDogsByUser(User $user)
     {
         $activeLostDogs = Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::LOST)
-            ->orWhere('listing_type', ListingTypesEnum::FOUND)
             ->where('user_id', $user->id)
             ->get();
 

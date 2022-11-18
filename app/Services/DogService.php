@@ -136,7 +136,7 @@ class DogService
 
     public function getAllListingsOfUser(User $user)
     {
-        $activeLostDogs = $this->dogRepository->getLostOrActiveDogsByUser($user);
+        $activeLostDogs = $this->dogRepository->activeDogsByUser($user);
         return $activeLostDogs;
     }
 }
