@@ -189,8 +189,6 @@ class Dogs extends Model
     }
 
 
-
-
     /**
      * Returns the active dog with type lost by id
      */
@@ -211,17 +209,5 @@ class Dogs extends Model
             ->get()
             ->count();
         return $adoptedListingsCount;
-    }
-
-    /**
-     * Returns the total number of listings that are adopted (all shelters)
-     */
-    public static function getTotalDogsCount(string $listing_type = ListingTypesEnum::FOUND, string $listing_status): int
-    {
-        $result =  Dogs::where('status_id', $listing_status)
-            ->where('listing_type', $listing_type)
-            ->count();
-
-        return $result;
     }
 }

@@ -198,7 +198,7 @@ class DogRepository implements DogListingRepositoryInterface
      * based on the listing type passed 
      *
      */
-    public static function totalDogsListedByUser(User $user, string $listing_type = ListingTypesEnum::LOST): int
+    public function totalDogsListedByUser(User $user, string $listing_type = ListingTypesEnum::LOST): int
     {
         $activeDogsCount = Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
             ->where('listing_type', $listing_type)
@@ -206,5 +206,18 @@ class DogRepository implements DogListingRepositoryInterface
             ->get()
             ->count();
         return $activeDogsCount;
+    }
+
+
+    /**
+     * Returns the total number of listings that are adopted (all shelters)
+     */
+    public function getTotalDogsCount(string $listing_type = ListingTypesEnum::FOUND, string $listing_status): int
+    {
+        $result =  Dogs::where('status_id', $listing_status)
+            ->where('listing_type', $listing_type)
+            ->count();
+
+        return $result;
     }
 }
