@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\DogListingStatusesEnum as ListingStatuses;
-use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Dogs extends Model
@@ -156,110 +151,6 @@ class Dogs extends Model
     }
 
     /**
-     * Get all active dog listings for ADOPTIONS
-     *
-     * @param  array $params
-     * @return LengthAwarePaginator
-     */
-    public static function getAllActiveAdoptionDogs(): LengthAwarePaginator
-    {
-
-        $activeDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::ADOPT)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
-
-        return $activeDogs;
-    }
-
-    /**
-     * Get listings fors adoptions based on the setted params
-     *
-     * @param  array $params
-     * @return Collection
-     */
-    public static function getListingsByParams($params): LengthAwarePaginator
-    {
-        //only dogs for adoptions
-        $query = Dogs::where('listing_type', ListingTypesEnum::ADOPT);
-
-        if (isset($params['size'])) {
-            $query->where('size', $params['size']);
-        }
-
-        if (isset($params['shelter_id'])) {
-            $query->where('shelter_id', $params['shelter_id']);
-        }
-
-        if (isset($params['city'])) {
-
-            $query->whereIn('city_id', $params['city']);
-        }
-
-        if (isset($params['status'])) {
-            $query->where('status_id', $params['status']);
-        } else {
-            //default active
-            $query->where('status_id', ListingStatuses::ACTIVE);
-        }
-
-        if (isset($params['sortField'], $params['sortValue'])) {
-            // check if the sort field is allowed
-            if (in_array($params['sortField'], self::SORTABLE_FIELDS)) {
-                $query->orderBy(
-                    $params['sortField'],
-                    $params['sortValue']
-                );
-            }
-        }
-
-        if (isset($params['gender'])) {
-            $query->where('gender', $params['gender']);
-        }
-
-        if (isset($params['minAge'])) {
-            $from   = Carbon::now()->subYears($params['maxAge'])->format('Y-m-d');
-            $to     = Carbon::now()->subYears($params['minAge'])->format('Y-m-d');
-
-            $query->whereBetween('dob', [$from, $to]);
-        }
-
-        if (isset($params['orderBy'])) {
-            $query->orderBy('created_at', 'DESC');
-        }
-
-        return $query->paginate(12);
-    }
-
-    /**
-     * Search dog listing by id
-     *
-     * @param  int $id
-     * @return Dogs
-     */
-    public static function findById($id)
-    {
-        return Dogs::where('id', $id)->first();
-    }
-
-    /**
-     * Get the count all active dog listings of specific shelter
-     *
-     * @param  int $shelter_id
-     * @param  bool $active
-     * @return int 
-     */
-    public static function getListingsCountByShelter(int $shelter_id, bool $active = false)
-    {
-        $query = Dogs::where('shelter_id', $shelter_id);
-        if ($active) {
-            $query->where('status_id', ListingStatuses::ACTIVE);
-        }
-        $listingsCount = $query->get()->count();
-        return (int) $listingsCount;
-    }
-
-    /**
      * Check wether specific user has favourite specific dog on pibvot table favourites
      *
      * @param  int $user_id
@@ -271,17 +162,14 @@ class Dogs extends Model
     }
 
     /**
-     * Increase the total_views counter of dog
+     * Increments total view of model object
      *
-     * @param  mixed $dog
-     * @return void
+     * @return bool
      */
-    public static function incrementViews(Dogs $dog)
+    public function incrementViews(): bool
     {
-
-        return Dogs::where('id', $dog->id)->increment('total_views');
+        return $this->increment('total_views');
     }
-
     /**
      * Get the number of favourites for the dog
      *
@@ -290,103 +178,5 @@ class Dogs extends Model
     public function getCountOfFavourites()
     {
         return DB::table('favourites')->where('dog_id', $this->id)->count();
-    }
-
-    /**
-     * Gets the total number of listings favourites of a single shelter 
-     *
-     * @param  Shelter $shelter
-     * @return int
-     */
-    public static function totalFavouritesByShelter(Shelter $shelter): int
-    {
-        $listings = $shelter->dogs()->get();
-        $total    = 0;
-
-        foreach ($listings as $listing) {
-            $total += $listing->getCountOfFavourites();
-        }
-
-        return $total;
-    }
-
-    /**
-     * Gets the total number of listings views of a single shelter 
-     *
-     * @param  Shelter $shelter
-     * @return int
-     */
-    public static function totalViewsByShelter(Shelter $shelter): int
-    {
-
-        $listings   = $shelter->dogs()->get();
-        $totalViews = $listings->map(function ($item, $key) use (&$total) {
-
-            $total = $item->total_views;
-            return $total;
-        });
-
-        return array_sum($totalViews->all());
-    }
-
-
-    /**
-     * Retrieves the number of listed dogs of User 
-     * based on the listing type passed 
-     *
-     */
-    public static function ListeDdogsCountByUser(User $user, string $listing_type = ListingTypesEnum::LOST): int
-    {
-        $activeDogsCount = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', $listing_type)
-            ->where('user_id', $user->id)
-            ->get()
-            ->count();
-        return $activeDogsCount;
-    }
-
-    public static function getActiveListingsByUser(User $user)
-    {
-        $activeLostDogs = Dogs::where('status_id', ListingStatuses::ACTIVE)
-            ->where('listing_type', ListingTypesEnum::LOST)
-            ->orWhere('listing_type', ListingTypesEnum::FOUND)
-            ->where('user_id', $user->id)
-            ->get();
-
-        return $activeLostDogs;
-    }
-
-    /**
-     * Returns the active dog with type lost by id
-     */
-    public static function findActiveListingById(string $id): Dogs|null
-    {
-        $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
-            ->where('id', $id)
-            ->first();
-
-        return $lostDog;
-    }
-
-    public static function adoptedListingsCountByUser(Shelter $shelter)
-    {
-        $adoptedListingsCount = Dogs::where('status_id', ListingStatuses::ADOPTED)
-            ->where('listing_type', ListingTypesEnum::ADOPT)
-            ->where('shelter_id', $shelter->id)
-            ->get()
-            ->count();
-        return $adoptedListingsCount;
-    }
-
-    /**
-     * Returns the total number of listings that are adopted (all shelters)
-     */
-    public static function getTotalDogsCount(string $listing_type = ListingTypesEnum::FOUND, string $listing_status): int
-    {
-        $result =  Dogs::where('status_id', $listing_status)
-            ->where('listing_type', $listing_type)
-            ->count();
-
-        return $result;
     }
 }

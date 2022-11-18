@@ -2,24 +2,26 @@
 
 namespace App\Services;
 
-use App\Enums\CoverImagesPathEnum;
 use App\Enums\ListingTypesEnum;
 use App\Models\Dogs;
 use App\Models\DogsViewsLog;
-use App\Models\LostDogs;
 use App\Models\User;
+use App\Repositories\DogRepository;
 use App\Traits\ApiResponser;
-use Exception;
-use File;
+
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DogService
 {
     use AuthorizesRequests, ApiResponser;
 
+    private  $dogRepository;
+
+    public function __construct()
+    {
+        $this->dogRepository = (new DogRepository());
+    }
     /**
      * Get listings based on the request (if no filters return all active dogs otherwise filter)
      *
@@ -41,10 +43,10 @@ class DogService
             //means no params added
             switch ($type) {
                 case ListingTypesEnum::ADOPT:
-                    return Dogs::getAllActiveAdoptionDogs();
+                    return $this->dogRepository->getAllDogs(ListingTypesEnum::ADOPT);
                     break;
                 case ListingTypesEnum::LOST:
-                    return LostDogs::allActiveDogs();
+                    return $this->dogRepository->getAllDogs(ListingTypesEnum::LOST);
                     break;
                 default;
             }
@@ -79,8 +81,7 @@ class DogService
             $params['maxAge'] = $request->maxAge ?? 10;
         }
 
-
-        $dogs = Dogs::getListingsByParams($params);
+        $dogs = $this->dogRepository->getDogsByParams($params, ListingTypesEnum::ADOPT);
 
         return $dogs;
     }
@@ -94,10 +95,10 @@ class DogService
     public function getAllListingsOfShelter($shelter_id, Request $request)
     {
         if ($request->status) {
-            return Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'status' => $request->status, 'orderBy' => 1]);
+            return $this->dogRepository->getDogsByParams(['shelter_id' => $shelter_id, 'status' => $request->status, 'orderBy' => 1]);
         }
 
-        $results = Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'orderBy' => 1]);
+        $results = $this->dogRepository->getDogsByParams(['shelter_id' => $shelter_id, 'orderBy' => 1]);
 
         return $results;
     }
@@ -110,7 +111,7 @@ class DogService
      */
     public function getSingleDog(string $dogId)
     {
-        $dogListing = Dogs::findById($dogId);
+        $dogListing = $this->dogRepository->getDogById($dogId);
         return $dogListing;
     }
 
@@ -123,10 +124,11 @@ class DogService
      */
     public function updateCountView(Dogs $dog, String $clientIp): void
     {
+
         $userAlreadySeen = DogsViewsLog::isUserAlreadySeen($dog->id, $clientIp);
 
         if (!$userAlreadySeen) {
-            Dogs::incrementViews($dog);
+            $dog->incrementViews();
         }
 
         DogsViewsLog::insertViewLog($dog, $clientIp);
@@ -134,7 +136,7 @@ class DogService
 
     public function getAllListingsOfUser(User $user)
     {
-        $activeLostDogs = Dogs::getActiveListingsByUser($user);
+        $activeLostDogs = $this->dogRepository->getLostOrActiveDogsByUser($user);
         return $activeLostDogs;
     }
 }

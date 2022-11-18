@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ShelterSingleResource;
-use App\Models\Shelter;
-use Illuminate\Http\Request;
+use App\Repositories\ShelterRepository;
 
 class ShelterController extends Controller
 {
     public function getSingle($id)
     {
-        $shelter = Shelter::findById($id);
+        $shelter = ShelterRepository::getShelterById($id);
         return new ShelterSingleResource($shelter);
     }
 }
