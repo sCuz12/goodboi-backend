@@ -95,10 +95,10 @@ class DogService
     public function getAllListingsOfShelter($shelter_id, Request $request)
     {
         if ($request->status) {
-            return Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'status' => $request->status, 'orderBy' => 1]);
+            return $this->dogRepository->getDogsByParams(['shelter_id' => $shelter_id, 'status' => $request->status, 'orderBy' => 1]);
         }
 
-        $results = Dogs::getListingsByParams(['shelter_id' => $shelter_id, 'orderBy' => 1]);
+        $results = $this->dogRepository->getDogsByParams(['shelter_id' => $shelter_id, 'orderBy' => 1]);
 
         return $results;
     }
@@ -124,10 +124,11 @@ class DogService
      */
     public function updateCountView(Dogs $dog, String $clientIp): void
     {
+
         $userAlreadySeen = DogsViewsLog::isUserAlreadySeen($dog->id, $clientIp);
 
         if (!$userAlreadySeen) {
-            Dogs::incrementViews($dog);
+            $dog->incrementViews();
         }
 
         DogsViewsLog::insertViewLog($dog, $clientIp);

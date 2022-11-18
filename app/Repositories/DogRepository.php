@@ -220,4 +220,26 @@ class DogRepository implements DogListingRepositoryInterface
 
         return $result;
     }
+
+    /**
+     * Returns the active dog with type lost by id
+     */
+    public static function findActiveListingById(string $id): Dogs|null
+    {
+        $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
+            ->where('id', $id)
+            ->first();
+
+        return $lostDog;
+    }
+
+
+    /**
+     * Increase the total_views counter of dog
+     * @return bool
+     */
+    public static function incrementViewsOfListing(Dogs $dog): bool
+    {
+        return Dogs::where('id', $dog->id)->increment('total_views');
+    }
 }

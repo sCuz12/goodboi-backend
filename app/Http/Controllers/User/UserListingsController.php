@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DogResource;
 use App\Http\Resources\FoundDogs\EditFoundDogResource;
 use App\Http\Resources\LostDogs\LostDogEditResource;
-use App\Models\Dogs;
+use App\Repositories\DogRepository;
 use App\Services\DogService;
 use Auth;
 use Illuminate\Http\Response;
@@ -29,7 +29,7 @@ class UserListingsController extends Controller
     public function showEdit($id)
     {
 
-        $lostDogListing = Dogs::findActiveListingById($id);
+        $lostDogListing = DogRepository::findActiveListingById($id);
 
         $ableToUpdate = Auth::user()->can('showEditLostDog', $lostDogListing);
         if (!$ableToUpdate) {

@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\DogListingStatusesEnum as ListingStatuses;
-use App\Enums\DogListingStatusesEnum;
 use App\Enums\ListingTypesEnum;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Dogs extends Model
@@ -167,17 +162,14 @@ class Dogs extends Model
     }
 
     /**
-     * Increase the total_views counter of dog
+     * Increments total view of model object
      *
-     * @param  mixed $dog
-     * @return void
+     * @return bool
      */
-    public static function incrementViews(Dogs $dog)
+    public function incrementViews(): bool
     {
-
-        return Dogs::where('id', $dog->id)->increment('total_views');
+        return $this->increment('total_views');
     }
-
     /**
      * Get the number of favourites for the dog
      *
@@ -186,28 +178,5 @@ class Dogs extends Model
     public function getCountOfFavourites()
     {
         return DB::table('favourites')->where('dog_id', $this->id)->count();
-    }
-
-
-    /**
-     * Returns the active dog with type lost by id
-     */
-    public static function findActiveListingById(string $id): Dogs|null
-    {
-        $lostDog =  Dogs::where('status_id', DogListingStatusesEnum::ACTIVE)
-            ->where('id', $id)
-            ->first();
-
-        return $lostDog;
-    }
-
-    public static function adoptedListingsCountByUser(Shelter $shelter)
-    {
-        $adoptedListingsCount = Dogs::where('status_id', ListingStatuses::ADOPTED)
-            ->where('listing_type', ListingTypesEnum::ADOPT)
-            ->where('shelter_id', $shelter->id)
-            ->get()
-            ->count();
-        return $adoptedListingsCount;
     }
 }
