@@ -148,12 +148,16 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($url));
     }
     /**
-     * Retrieves the profile image path
+     * Retrieves the profile image path if is not cdn url
      *
      * @return String
      */
     public function getProfileImagePath()
     {
+
+        if (filter_var($this->cover_photo, FILTER_VALIDATE_URL)) {
+            return $this->cover_photo;
+        }
         return asset(self::PROFILE_IMAGE_PATH . $this->cover_photo);
     }
 
@@ -185,5 +189,15 @@ class User extends Authenticatable
         })->get();
 
         return $result;
+    }
+
+    /**
+     * isSocialRegistered
+     *
+     * @return void
+     */
+    public function isSocialRegistered()
+    {
+        return empty($this->password);
     }
 }
