@@ -48,8 +48,8 @@ class NotifyUsersNewAdoption extends Notification implements ShouldQueue
         return (new MailMessage)
             ->greeting('Hello ' . $this->userName)
             ->subject("New goodboi for adoption")
-            ->line($this->listing->name . ' is listed for adoption ')
-            ->line('we are sending you this email to inform you to check this little cute dog and help him!')
+            ->line($this->listing->name . ' is listed for adoption')
+            ->line('we are sending you this email to inform you to check this little cute goodboi!')
             ->action('SEE THE DOG', url(env('CLIENT_URL') . "/animals/view/" . $this->listing->id))
             ->line('Thank you for using Goodboi!');
     }
