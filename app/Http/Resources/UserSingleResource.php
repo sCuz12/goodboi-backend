@@ -34,7 +34,8 @@ class UserSingleResource extends JsonResource
                 'email'        => $this->email,
                 'cover_photo'  => $this->cdn ? $this->cover_photo : $this->getProfileImagePath(),
                 'user_type'    => $this->user_type,
-                'phone'        => $this->userProfile->phone ?? ""
+                'phone'        => $this->userProfile->phone ?? "",
+                'allow_emails' => $this->marketingSettings->allow_emails ?? 0,
             ];
         if ($this->user_type === UserType::SHELTER) {
             $data['shelter'] = $this->shelter;

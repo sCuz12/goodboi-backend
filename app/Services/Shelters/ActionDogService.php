@@ -27,6 +27,7 @@ use App\Exceptions\NotShelterAccountException;
 use App\Exceptions\UnableToDeleteListingException;
 use App\Exceptions\UnableToEditListingException;
 use App\Exceptions\UnableToUploadListingException;
+use App\Models\User;
 use App\Notifications\NotifyUsersNewAdoption;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Log;
@@ -89,7 +90,7 @@ class ActionDogService
             //send email notification to normal users
             if (!App::isLocal()) {
                 try {
-                    $users = UserRepository::getActiveUsers();
+                    $users = UserRepository::getActiveEmailableUsers();
                     foreach ($users as $user) {
                         $userName = $user->first_name;
                         $user->notify((new NotifyUsersNewAdoption($dogList, $userName))->delay(30));

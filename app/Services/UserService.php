@@ -9,6 +9,7 @@ use App\Http\Requests\UserCreateRequest;
 use App\Models\Dogs;
 use App\Models\Favourites;
 use App\Models\User;
+use App\Models\UserMarketingSettings;
 use App\Repositories\DogRepository;
 use App\Services\FileUploader\CoverImageUploader;
 use Illuminate\Support\Facades\Hash;
@@ -72,6 +73,12 @@ class UserService
         if ($request->phone) {
             $user->userProfile->update(['phone' => $request->phone]);
         }
+
+        if (isset($request->allow_emails)) {
+            $allowEmails = $request->allow_emails == "true" ? 1 : 0;
+            UserMarketingSettings::updateOrCreate(['user_id' => $user->id], ['allow_emails' => $allowEmails, 'user_id' => $user->id]);
+        }
+
         $user->update($input);
 
         return $user;

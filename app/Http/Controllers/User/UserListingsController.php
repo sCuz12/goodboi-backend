@@ -8,11 +8,13 @@ use App\Http\Resources\FoundDogs\EditFoundDogResource;
 use App\Http\Resources\LostDogs\LostDogEditResource;
 use App\Repositories\DogRepository;
 use App\Services\DogService;
+use App\Traits\ApiResponser;
 use Auth;
 use Illuminate\Http\Response;
 
 class UserListingsController extends Controller
 {
+    use ApiResponser;
     /**
      * Retrieves listings (found,lost) of a loggedin user
      *

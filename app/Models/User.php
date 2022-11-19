@@ -121,6 +121,11 @@ class User extends Authenticatable
         return $this->hasOne(UserProfile::class);
     }
 
+    public function marketingSettings()
+    {
+        return $this->hasOne(UserMarketingSettings::class);
+    }
+
     public function isNormalUser()
     {
         return $this->user_type === UserType::USER;
