@@ -13,14 +13,17 @@ class NotifyUsersNewAdoption extends Notification implements ShouldQueue
     use Queueable;
 
     private $listing;
+
+    private string $userName;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Dogs $dogListing)
+    public function __construct(Dogs $dogListing, string $userName)
     {
-        $this->listing = $dogListing;
+        $this->listing  = $dogListing;
+        $this->userName = $userName;
     }
 
     /**
@@ -43,6 +46,7 @@ class NotifyUsersNewAdoption extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->greeting('Hello ' . $this->userName)
             ->subject("New goodboi for adoption")
             ->line($this->listing->name . ' is listed for adoption ')
             ->line('we are sending you this email to inform you to check this little cute dog and help him!')

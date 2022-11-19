@@ -87,7 +87,7 @@ class ActionDogService
             (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage();
 
             //send email notification to normal users
-            if (App::isLocal()) {
+            if (!App::isLocal()) {
                 try {
                     $users = UserRepository::getActiveUsers();
                     foreach ($users as $user) {
