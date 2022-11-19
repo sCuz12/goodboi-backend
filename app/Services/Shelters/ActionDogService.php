@@ -30,7 +30,6 @@ use App\Exceptions\UnableToUploadListingException;
 use App\Notifications\NotifyUsersNewAdoption;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Log;
-use Notification;
 
 class ActionDogService
 {
@@ -88,11 +87,12 @@ class ActionDogService
             (new ListingsImagesUploader($request->images, $dogList->title, $dogList->id))->uploadImage();
 
             //send email notification to normal users
-            if (!App::isLocal()) {
+            if (App::isLocal()) {
                 try {
                     $users = UserRepository::getActiveUsers();
                     foreach ($users as $user) {
-                        $user->notify((new NotifyUsersNewAdoption($dogList))->delay(30));
+                        $userName = $user->first_name;
+                        $user->notify((new NotifyUsersNewAdoption($dogList, $userName))->delay(30));
                     }
                 } catch (Exception $e) {
                     Log::error($e->getMessage());

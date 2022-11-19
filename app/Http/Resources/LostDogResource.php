@@ -24,9 +24,6 @@ class LostDogResource extends JsonResource
             return asset($image);
         }, $listingsImages);
 
-        //location
-        $location = Location::find($this->location_id);
-
         $data = [
             'id'             => $this->dog_id,
             'title'          => $this->title,
@@ -39,8 +36,8 @@ class LostDogResource extends JsonResource
             'size'           => $this->size,
             'gender'         => $this->gender,
             'lost_date'      => $this->lost_at ?? "",
-            "lost_city"      => $location->city->name ?? "",
-            'lost_at'        => $location->name ?? "",
+            "lost_city"      => $this->city->name ?? "",
+            'lost_at'        => $this->lostDog->location->name ?? "",
             "reward"         => $this->reward ?? 0,
             "owner"          => $this->user ? $this->user->combineName()  : "",
         ];
