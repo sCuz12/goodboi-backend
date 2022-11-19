@@ -90,7 +90,7 @@ class UserController
 
         if ($user->isShelter()) {
             return [
-                'user'  => $user,
+                'user'  => new UserSingleResource($user),
                 'shelter' => new ShelterSingleResource($user->shelter),
             ];
         }
