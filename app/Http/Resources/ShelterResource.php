@@ -20,7 +20,7 @@ class ShelterResource extends JsonResource
             'shelter_name'  => $this->shelter_name,
             'address'       => $this->address,
             'description'   => $this->description,
-            'cover_image'   => $this->getCoverImagePath(),
+            'cover_image'   => $this->user->getProfileImagePath(),
             'city'          => $this->city->name ?? "",
             'email'         => $this->user->email ?? "",
             'phone'         => $this->phone,
