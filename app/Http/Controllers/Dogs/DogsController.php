@@ -7,7 +7,9 @@ use App\Http\Resources\DogSingleResource;
 use Illuminate\Http\Request;
 use App\Services\DogService;
 use App\Http\Controllers\Controller;
+use App\Models\Shelter;
 use App\Repositories\Interfaces\DogListingRepositoryInterface;
+use Illuminate\Http\Response;
 
 class DogsController extends Controller
 {
@@ -44,7 +46,7 @@ class DogsController extends Controller
             return response("Listing not found", 404);
         }
         //updates count of the view 
-        (new DogService())->updateCountView($dog, request()->header('Client_Ip'));
+        $this->dogService->updateCountView($dog, request()->header('Client_Ip'));
 
         return new DogSingleResource($dog);
     }
@@ -52,16 +54,17 @@ class DogsController extends Controller
     /**
      * Get Listings of specific shelter
      *
-     * @param  int $id
+     * @param   $id
+     * @param Request $request
      * @return JSON
      */
-    // public function shelterListings($id, Request $request)
-    // {
-    //     $shelter = Shelter::find($id);
-    //     if (!$shelter) {
-    //         return response('Shelter not found', Response::HTTP_NOT_FOUND);
-    //     }
-    //     //$listings = (new DogService())->getAllListingsOfShelter($shelter->id, $request);
-    //     //return DogResource::collection($listings);
-    // }
+    public function shelterListings($id, Request $request)
+    {
+        $shelter = Shelter::find($id);
+        if (!$shelter) {
+            return response('Shelter not found', Response::HTTP_NOT_FOUND);
+        }
+        $listings = $this->dogService->getAllListingsOfShelter($shelter->id, $request);
+        return DogResource::collection($listings);
+    }
 }
